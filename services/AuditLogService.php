@@ -4,13 +4,34 @@ namespace Craft;
 class AuditLogService extends BaseApplicationComponent 
 {
 
-    public function log()
+    public function log($criteria)
     {
     
+        // Build specific criteria
+        $condition = '';
+        $params = array();
+        if($criteria->type) {
+            $condition .= 'type = :type and ';
+            $params[':type'] = $criteria->type;
+        }
+        if($criteria->status) {
+            $condition .= 'status = :status and ';
+            $params[':status'] = $criteria->status;
+        }
+        if($criteria->search) {
+            $condition .= 'origin like :search and ';
+            $params[':search'] = '%' . addcslashes($criteria->search, '%_') . '%';
+        }
+        $condition = substr($condition, 0, -5);
+    
         // Get logs from record
-        return AuditLogRecord::model()->findAll(array(
-            'order' => 'id desc'
-        ));
+        return AuditLogModel::populateModels(AuditLogRecord::model()->findAll(array(
+            'order'     => 'id desc',
+            'limit'     => $criteria->limit,
+            'offset'    => $criteria->offset,
+            'condition' => $condition,
+            'params'    => $params
+        )));
     
     }
     
@@ -18,17 +39,17 @@ class AuditLogService extends BaseApplicationComponent
     {
     
         // Get log from record
-        $log = AuditLogRecord::model()->findByPk($id)->getAttributes();
+        $log = AuditLogModel::populateModel(AuditLogRecord::model()->findByPk($id));
         
-        // Gather diff report
-        $log['diff'] = array();
+        // Create diff
+        $diff = array();
                 
         // Loop through content
-        foreach($log['after'] as $handle => $item) 
+        foreach($log->after as $handle => $item) 
         {
                                 
             // Set parsed values
-            $log['diff'][$handle] = array(
+            $diff[$handle] = array(
                 'label'   => $item['label'],
                 'changed' => ($item['value'] != $log['before'][$handle]['value']),
                 'after'   => $item['value'],
@@ -37,8 +58,8 @@ class AuditLogService extends BaseApplicationComponent
         
         }
         
-        // Get user model
-        $log['user'] = craft()->users->getUserById($log['userId']);
+        // Set diff
+        $log->setAttribute('diff', $diff);
         
         // Return the log
         return $log;
