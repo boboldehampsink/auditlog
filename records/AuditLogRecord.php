@@ -23,7 +23,6 @@ class AuditLogRecord extends BaseRecord
     public function defineRelations()
     {
         return array(
-            'element' => array(static::BELONGS_TO, 'ElementRecord'),
             'user'    => array(static::BELONGS_TO, 'UserRecord')
         );
     }
