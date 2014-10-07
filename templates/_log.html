@@ -1,0 +1,69 @@
+{% extends "_layouts/cp" %}
+
+{% set item = craft.auditlog.view(logId) %}
+
+{% set crumbs = [
+    { label: "Audit Log"|t, url: url('auditlog') },
+    { label: item.type, url: url('auditlog/' ~ logId) }
+] %}
+
+{% set title = "Audit Log"|t %}
+
+{% set content %}
+<div class="tableview">
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col" data-attribute="type">{{ "Type"|t }}</th>
+                <th scope="col" data-attribute="user">{{ "User"|t }}</th>
+                <th scope="col" data-attribute="origin">{{ "Origin"|t }}</th>
+                <th scope="col" data-attribute="modified">{{ "Modified"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row" data-title="{{ 'Type'|t }}">
+                    <div class="element" data-id="{{ item.id }}" data-status="{{ item.status }}" data-label="{{ item.type }}">
+                        <div class="label">
+                            <span class="status {{ item.status }}"></span>
+                            <span class="title">
+                                {{ item.type }}
+                            </span>
+                        </div>
+                    </div>                
+                </td>
+                <td data-title="{{ 'User'|t }}">
+                    <a href="{{ url('users/' ~ item.user.id) }}">{{ item.user.username }}</a>
+                </td>
+                <td data-title="{{ 'Origin'|t }}">
+                    {{ item.origin }}
+                </td>
+                <td data-title="{{ 'Modified'|t }}">
+                    {{ item.dateUpdated|datetime }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br />
+<div class="tableview">
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col" data-attribute="attribute">{{ "Attribute"|t }}</th>
+                <th scope="col" data-attribute="before">{{ "Before"|t }}</th>
+                <th scope="col" data-attribute="after">{{ "After"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for attribute in item.diff %}
+            <tr>
+                <th>{{ attribute.label }}</th>
+                <td>{{ attribute.before}}</td>
+                <td{% if attribute.changed %} style="color: #ffffff; background-color: #009900;"{% endif %}>{{ attribute.after }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endset %}
