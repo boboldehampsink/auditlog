@@ -59,8 +59,8 @@
         {% for attribute in item.diff %}
             <tr>
                 <th>{{ attribute.label }}</th>
-                <td>{{ attribute.before}}</td>
-                <td{% if attribute.changed %} style="color: #ffffff; background-color: #009900;"{% endif %}>{{ attribute.after }}</td>
+                <td>{{ attribute.before is not iterable ? attribute.before }}</td>
+                <td{% if attribute.changed %} style="color: #ffffff; background-color: #009900;"{% endif %}>{{ attribute.after is not iterable ? attribute.after }}</td>
             </tr>
         {% endfor %}
         </tbody>
