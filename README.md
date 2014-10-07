@@ -9,7 +9,7 @@ Features:
  - View who changed what on what page
  
 Roadmap:
- - Import more ElementTypes (Tags, Globals, Assets)
+ - Log more ElementTypes (Tags, Globals, Assets)
  
 Important:
 The plugin's folder should be named "auditlog"
