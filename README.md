@@ -15,6 +15,9 @@ Important:
 The plugin's folder should be named "auditlog"
 
 Changelog
-================= 
-###0.1###
+=================
+###0.2.0###
+ - Transformed AuditLog into an ElementType for easier sorting, filtering, searching and pagination
+
+###0.1.0###
  - Initial push to GitHub
