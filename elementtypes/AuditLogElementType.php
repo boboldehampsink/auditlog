@@ -44,16 +44,7 @@ class AuditLogElementType extends BaseElementType
             case 'dateCreated':
             case 'dateUpdated':
             {
-                $date = $element->$attribute;
-
-                if ($date)
-                {
-                    return $date->localeDate();
-                }
-                else
-                {
-                    return '';
-                }
+                return craft()->dateFormatter->formatDateTime($element->$attribute);
             }
             case 'user':
             {
