@@ -59,7 +59,7 @@
         {% for attribute in item.diff %}
             <tr>
                 <th>{{ attribute.label }}</th>
-                <td>{{ attribute.before}}</td>
+                <td>{{ attribute.before }}</td>
                 <td{% if attribute.changed %} style="color: #ffffff; background-color: #009900;"{% endif %}>{{ attribute.after }}</td>
             </tr>
         {% endfor %}
