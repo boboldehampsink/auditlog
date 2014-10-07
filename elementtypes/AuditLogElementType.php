@@ -53,7 +53,7 @@ class AuditLogElementType extends BaseElementType
             }
             case 'changes':
             {
-                return '<a class="btn" href="auditlog/' . $element->id .'">' . Craft::t('View') . '</a>';    
+                return '<a class="btn" href="' . UrlHelper::getCpUrl('auditlog/' . $element->id) . '">' . Craft::t('View') . '</a>';
             }
             default:
             {
