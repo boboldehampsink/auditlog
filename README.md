@@ -16,6 +16,10 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.1###
+ - Fix "changes" url in CP - Thanks to Tim Kelty
+ - Avoid Twig errors on array value - Thanks to Tim Kelty
+
 ###0.2.0###
  - Transformed AuditLog into an ElementType for easier sorting, filtering, searching and pagination
 
