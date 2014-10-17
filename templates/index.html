@@ -1,3 +1,13 @@
 {% extends "_layouts/elementindex" %}
 {% set title = "Audit Log"|t %}
 {% set elementType = 'AuditLog' %}
+
+{% block sidebar %}
+    {% if currentUser.admin %}
+    <div class="buttons">
+        <a class="btn submit" data-icon="refresh" href="{{ actionUrl('auditLog/clear') }}" onclick="return confirm('{{ "Are you sure you want to clear all logs?"|t }}')">{{ "Clear"|t }}</a>
+    </div>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

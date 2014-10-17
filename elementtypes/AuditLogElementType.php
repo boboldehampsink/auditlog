@@ -93,6 +93,7 @@ class AuditLogElementType extends BaseElementType
             '*' => array(
                 'label'      => Craft::t('All logs')
             ),
+            array('heading' => Craft::t('Elements')),
             'categories' => array(
                 'label'      => Craft::t('Categories'),
                 'criteria'   => array(
