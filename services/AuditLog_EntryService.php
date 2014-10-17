@@ -132,7 +132,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
                 $field = $field->getField();
                 $handle = $field->handle;
                 $label = $field->name;
-                $value = $empty ? '' : craft()->auditLog->parseFieldData($handle, $entry);
+                $value = $empty ? '' : craft()->auditLog->parseFieldData($handle, $entry->$handle);
                 
                 // Set on fields
                 $fields[$handle] = array(

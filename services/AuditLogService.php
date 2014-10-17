@@ -67,14 +67,11 @@ class AuditLogService extends BaseApplicationComponent
     }
     
     // Parse field values
-    public function parseFieldData($handle, $value) 
+    public function parseFieldData($handle, $data) 
     {
-        
-        // Gather data
-        $data = "";
-        
+    
         // Do we have any data at all
-        if(!is_null($value)) {
+        if(!is_null($data)) {
         
             // Get field info
             $field = craft()->fields->getFieldByHandle($handle);
@@ -89,32 +86,44 @@ class AuditLogService extends BaseApplicationComponent
                     case AuditLogModel::FieldTypeCategories:
                     case AuditLogModel::FieldTypeAssets:
                     case AuditLogModel::FieldTypeUsers:
-                    
-                    // Show names
-                    $data = implode(', ', $value->$handle->find());
-                    
-                    break;
-                
-                case AuditLogModel::FieldTypeLightswitch:
-                
-                    // Make data human readable
-                    switch($value->$handle) {
-                
-                        case "0":
-                            $data = Craft::t("No");
-                            break;
                         
-                        case "1":
-                            $data = Craft::t("Yes");
-                            break;
+                        // Show names
+                        $data = implode(', ', $data->find());
+                        
+                        break;
                     
-                    }
+                    case AuditLogModel::FieldTypeLightswitch:
                     
-                    break;
+                        // Make data human readable
+                        switch($data) {
+                        
+                            case "0":
+                                $data = Craft::t("No");
+                                break;
+                            
+                            case "1":
+                                $data = Craft::t("Yes");
+                                break;
+                        
+                        }
+                        
+                        break;
+                        
+                    case AuditLogModel::FieldTypeTable:
+                    
+                        // Convert to string
+                        $data = StringHelper::arrayToString($data);
+                        
+                        break;
                 
                 }
             
             }
+        
+        } else {
+        
+            // Don't return null, return empty
+            $data = "";
         
         }
         
