@@ -4,9 +4,17 @@ namespace Craft;
 class AuditLogModel extends BaseElementModel
 {
 
+    // Statuses
     const CREATED   = 'live';
     const MODIFIED  = 'pending';
     const DELETED   = 'expired';
+    
+    // Fieldtypes
+    const FieldTypeEntries     = 'Entries';
+    const FieldTypeCategories  = 'Categories';
+    const FieldTypeAssets      = 'Assets';
+    const FieldTypeUsers       = 'Users';
+    const FieldTypeLightswitch = 'Lightswitch';
     
     protected $elementType = 'AuditLog';
     

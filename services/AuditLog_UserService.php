@@ -129,7 +129,7 @@ class AuditLog_UserService extends BaseApplicationComponent
             $field = $field->getField();
             $handle = $field->handle;
             $label = $field->name;
-            $value = $empty ? '' : ($user->$handle instanceof ElementCriteriaModel ? implode(', ', $user->$handle->find()) : $user->$handle);
+            $value = $empty ? '' : craft()->auditLog->parseFieldData($handle, $user);
             
             // Set on fields
             $fields[$handle] = array(

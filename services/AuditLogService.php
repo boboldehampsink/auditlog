@@ -66,4 +66,60 @@ class AuditLogService extends BaseApplicationComponent
     
     }
     
+    // Parse field values
+    public function parseFieldData($handle, $value) 
+    {
+        
+        // Gather data
+        $data = "";
+        
+        // Do we have any data at all
+        if(!is_null($value)) {
+        
+            // Get field info
+            $field = craft()->fields->getFieldByHandle($handle);
+            
+            // If it's a field ofcourse
+            if(!is_null($field)) {
+            
+                // For some fieldtypes the're special rules
+                switch($field->type) {
+                
+                    case AuditLogModel::FieldTypeEntries:
+                    case AuditLogModel::FieldTypeCategories:
+                    case AuditLogModel::FieldTypeAssets:
+                    case AuditLogModel::FieldTypeUsers:
+                    
+                    // Show names
+                    $data = implode(', ', $value->$handle->find());
+                    
+                    break;
+                
+                case AuditLogModel::FieldTypeLightswitch:
+                
+                    // Make data human readable
+                    switch($value->$handle) {
+                
+                        case "0":
+                            $data = Craft::t("No");
+                            break;
+                        
+                        case "1":
+                            $data = Craft::t("Yes");
+                            break;
+                    
+                    }
+                    
+                    break;
+                
+                }
+            
+            }
+        
+        }
+        
+        return $data;
+    
+    }
+    
 }
