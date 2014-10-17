@@ -108,13 +108,6 @@ class AuditLogService extends BaseApplicationComponent
                         }
                         
                         break;
-                        
-                    case AuditLogModel::FieldTypeTable:
-                    
-                        // Convert to string
-                        $data = StringHelper::arrayToString($data);
-                        
-                        break;
                 
                 }
             
@@ -125,6 +118,11 @@ class AuditLogService extends BaseApplicationComponent
             // Don't return null, return empty
             $data = "";
         
+        }
+        
+        // If it's an array, make it a string
+        if(is_array($data)) {
+            $data = StringHelper::arrayToString($data);
         }
         
         return $data;

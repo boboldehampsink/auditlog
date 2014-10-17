@@ -15,7 +15,6 @@ class AuditLogModel extends BaseElementModel
     const FieldTypeAssets      = 'Assets';
     const FieldTypeUsers       = 'Users';
     const FieldTypeLightswitch = 'Lightswitch';
-    const FieldTypeTable       = 'Table';
     
     protected $elementType = 'AuditLog';
     
