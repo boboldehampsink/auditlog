@@ -57,7 +57,7 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->after = $this->fields($user);
             
             // Set status
-            $log->status = ($event->params['isNewUser'] ? 'live' : 'pending');
+            $log->status = ($event->params['isNewUser'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
             
             // Save row
             $log->save(false);
@@ -89,7 +89,7 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->after = $this->fields($user, true);
             
             // Set status
-            $log->status = 'expired';
+            $log->status = AuditLogModel::DELETED;
             
             // Save row
             $log->save(false);

@@ -57,7 +57,7 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             $log->after = $this->fields($category);
             
             // Set status
-            $log->status = ($event->params['isNewCategory'] ? 'live' : 'pending');
+            $log->status = ($event->params['isNewCategory'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
             
             // Save row
             $log->save(false);
@@ -89,7 +89,7 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             $log->after = $this->fields($category, true);
             
             // Set status
-            $log->status = 'expired';
+            $log->status = AuditLogModel::DELETED;
             
             // Save row
             $log->save(false);

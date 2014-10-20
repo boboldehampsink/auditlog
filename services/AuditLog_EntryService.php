@@ -57,7 +57,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->after = $this->fields($entry);
             
             // Set status
-            $log->status = ($event->params['isNewEntry'] ? 'live' : 'pending');
+            $log->status = ($event->params['isNewEntry'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
             
             // Save row
             $log->save(false);
@@ -89,7 +89,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->after = $this->fields($entry, true);
             
             // Set status
-            $log->status = 'expired';
+            $log->status = AuditLogModel::DELETED;
             
             // Save row
             $log->save(false);
