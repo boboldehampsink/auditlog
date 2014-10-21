@@ -51,16 +51,16 @@
         <thead>
             <tr>
                 <th scope="col" style="width: 33%;" data-attribute="attribute">{{ "Attribute"|t }}</th>
-                <th scope="col" style="width: 33%;"  data-attribute="before">{{ "Before"|t }}</th>
-                <th scope="col" style="width: 33%;"  data-attribute="after">{{ "After"|t }}</th>
+                <th scope="col" style="width: 33%;" data-attribute="before">{{ "Before"|t }}</th>
+                <th scope="col" style="width: 33%;" data-attribute="after">{{ "After"|t }}</th>
             </tr>
         </thead>
         <tbody>
         {% for attribute in item.diff %}
             <tr>
                 <th>{{ attribute.label }}</th>
-                <td>{{ attribute.before }}</td>
-                <td{% if attribute.changed %} style="color: #ffffff; background-color: #009900;"{% endif %}>{{ attribute.after }}</td>
+                <td style="word-break: break-all">{{ attribute.before }}</td>
+                <td style="word-break: break-all;{% if attribute.changed %}color: #ffffff; background-color: #009900;{% endif %}">{{ attribute.after }}</td>
             </tr>
         {% endfor %}
         </tbody>
