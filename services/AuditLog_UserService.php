@@ -101,6 +101,14 @@ class AuditLog_UserService extends BaseApplicationComponent
     public function fields(UserModel $user, $empty = false)
     {
     
+        // Always save id
+        $fields = array(
+            'id' => array(
+                'label' => Craft::t('ID'),
+                'value' => $entry->id
+            )
+        );
+    
         // Get element type
         $elementType = craft()->elements->getElementType(ElementType::User);
         

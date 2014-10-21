@@ -101,6 +101,14 @@ class AuditLog_CategoryService extends BaseApplicationComponent
     public function fields(CategoryModel $category, $empty = false)
     {
     
+        // Always save id
+        $fields = array(
+            'id' => array(
+                'label' => Craft::t('ID'),
+                'value' => $entry->id
+            )
+        );
+    
         // Get element type
         $elementType = craft()->elements->getElementType(ElementType::Category);
         

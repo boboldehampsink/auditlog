@@ -101,6 +101,18 @@ class AuditLog_EntryService extends BaseApplicationComponent
     public function fields(EntryModel $entry, $empty = false)
     {
     
+        // Always save id and title
+        $fields = array(
+            'id' => array(
+                'label' => Craft::t('ID'),
+                'value' => $entry->id
+            ),
+            'title' => array(
+                'label' => Craft::t('Title'),
+                'value' => $entry->title
+            )
+        );
+    
         // Get element type
         $elementType = craft()->elements->getElementType(ElementType::Entry);
         
