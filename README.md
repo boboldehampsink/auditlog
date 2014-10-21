@@ -16,6 +16,12 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.2###
+ - Added the ability to clear the log
+ - Better fieldtype parsing
+ - You can now easily go to origin
+ - ID (and for Entries, Title) are also stored now
+
 ###0.2.1###
  - Fix "changes" url in CP - Thanks to Tim Kelty
  - Avoid Twig errors on array value - Thanks to Tim Kelty
