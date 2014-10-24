@@ -16,6 +16,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.3###
+ - Fixed a bug where the plugin didn't work on PHP 5.3
+
 ###0.2.2###
  - Added the ability to clear the log
  - Better fieldtype parsing
