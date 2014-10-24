@@ -4,7 +4,7 @@ namespace Craft;
 class AuditLog_EntryService extends BaseApplicationComponent 
 {
 
-    private $_before = array();
+    public $_before = array();
 
     public function log()
     {
@@ -21,12 +21,12 @@ class AuditLog_EntryService extends BaseApplicationComponent
                 $entry = EntryModel::populateModel(EntryRecord::model()->findById($id));
                 
                 // Get fields
-                $this->_before = $this->fields($entry);
+                craft()->auditLog_entry->_before = craft()->auditLog_entry->fields($entry);
                 
             } else {
             
                 // Get fields
-                $this->_before = $this->fields($event->params['entry'], true);
+                craft()->auditLog_entry->_before = craft()->auditLog_entry->fields($event->params['entry'], true);
             
             }
                     
@@ -51,10 +51,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = $this->_before;
+            $log->before = craft()->auditLog_entry->_before;
             
             // Set after
-            $log->after = $this->fields($entry);
+            $log->after = craft()->auditLog_entry->fields($entry);
             
             // Set status
             $log->status = ($event->params['isNewEntry'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
@@ -83,10 +83,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = $this->fields($entry);
+            $log->before = craft()->auditLog_entry->fields($entry);
             
             // Set after
-            $log->after = $this->fields($entry, true);
+            $log->after = craft()->auditLog_entry->fields($entry, true);
             
             // Set status
             $log->status = AuditLogModel::DELETED;

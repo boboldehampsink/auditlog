@@ -4,7 +4,7 @@ namespace Craft;
 class AuditLog_UserService extends BaseApplicationComponent 
 {
 
-    private $_before = array();
+    public $_before = array();
 
     public function log()
     {
@@ -21,12 +21,12 @@ class AuditLog_UserService extends BaseApplicationComponent
                 $user = UserModel::populateModel(UserRecord::model()->findById($id));
                 
                 // Get fields
-                $this->_before = $this->fields($user);
+                craft()->auditLog_user->_before = craft()->auditLog_user->fields($user);
                 
             } else {
             
                 // Get fields
-                $this->_before = $this->fields($event->params['user'], true);
+                craft()->auditLog_user->_before = craft()->auditLog_user->fields($event->params['user'], true);
             
             }
                     
@@ -51,10 +51,10 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = $this->_before;
+            $log->before = craft()->auditLog_user->_before;
             
             // Set after
-            $log->after = $this->fields($user);
+            $log->after = craft()->auditLog_user->fields($user);
             
             // Set status
             $log->status = ($event->params['isNewUser'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
@@ -83,10 +83,10 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = $this->fields($user);
+            $log->before = craft()->auditLog_user->fields($user);
             
             // Set after
-            $log->after = $this->fields($user, true);
+            $log->after = craft()->auditLog_user->fields($user, true);
             
             // Set status
             $log->status = AuditLogModel::DELETED;
