@@ -16,6 +16,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.4###
+ - Also save section id for entry logs
+
 ###0.2.3###
  - Fixed a bug where the plugin didn't work on PHP 5.3
 
