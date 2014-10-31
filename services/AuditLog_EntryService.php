@@ -110,6 +110,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             'title' => array(
                 'label' => Craft::t('Title'),
                 'value' => $entry->title
+            ),
+            'sectionId' => array(
+                'label' => Craft::t('Section ID'),
+                'value' => $entry->sectionId
             )
         );
     
