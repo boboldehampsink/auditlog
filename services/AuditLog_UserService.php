@@ -42,7 +42,7 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log = new AuditLogRecord();
             
             // Set user id
-            $log->userId = craft()->userSession->getUser()->id;
+            $log->userId = craft()->userSession->getUser() ? craft()->userSession->getUser()->id : $user->id;
             
             // Set element type
             $log->type = ElementType::User;
