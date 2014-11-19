@@ -16,6 +16,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.6###
+ - Better object parsing
+
 ###0.2.5###
  - Also parse logged objects to string
  - Also log user id when registrating
