@@ -120,7 +120,7 @@ class AuditLogElementType extends BaseElementType
     }
     
     // Return the html
-    public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context)
+    public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
     {
         $variables = array(
             'viewMode'            => $viewState['mode'],
@@ -128,10 +128,11 @@ class AuditLogElementType extends BaseElementType
             'elementType'         => new ElementTypeVariable($this),
             'disabledElementIds'  => $disabledElementIds,
             'attributes'          => $this->defineTableAttributes($sourceKey),
-            'elements'            => craft()->auditLog->log($criteria)
+            'elements'            => craft()->auditLog->log($criteria),
+            'showCheckboxes'      => $showCheckboxes,
         );
        
-        $template = '_elements/'.$viewState['mode'].'view/'.(!$criteria->offset ? 'container' : 'elements');
+        $template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
         return craft()->templates->render($template, $variables);
     }
 
