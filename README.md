@@ -16,6 +16,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.8###
+ - Fixed a bug where the user couldn't be shown in some cases
+
 ###0.2.7###
  - Fixed origin url in some cases
 
