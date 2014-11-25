@@ -53,7 +53,7 @@ class AuditLogElementType extends BaseElementType
             }
             case 'origin':
             {
-                return '<a href="' . UrlHelper::getUrl(str_replace(craft()->config->get('cpTrigger') . '/', '', $element->origin)) . '">' . $element->origin . '</a>';
+                return '<a href="' . preg_replace('/' . craft()->config->get('cpTrigger') . '\//', '', UrlHelper::getUrl($element->origin), 1) . '">' . $element->origin . '</a>';
             }
             case 'changes':
             {
