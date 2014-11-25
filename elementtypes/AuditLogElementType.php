@@ -48,8 +48,8 @@ class AuditLogElementType extends BaseElementType
             }
             case 'user':
             {
-                $user = craft()->users->getUserById($element->user->id);
-                return '<a href="' . $user->getCpEditUrl() . '">' . $user . '</a>';
+                $user = $element->getUser();
+                return $user ? '<a href="' . $user->getCpEditUrl() . '">' . $user . '</a>' : Craft::t('Guest');
             }
             case 'origin':
             {
@@ -71,7 +71,7 @@ class AuditLogElementType extends BaseElementType
     {
         return array(
             'type'        => AttributeType::String,
-            'user'        => AttributeType::Number,
+            'userId'      => AttributeType::Number,
             'origin'      => AttributeType::String,
             'modified'    => AttributeType::DateTime,
             'status'      => AttributeType::String

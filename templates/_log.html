@@ -33,7 +33,11 @@
                     </div>                
                 </td>
                 <td data-title="{{ 'User'|t }}">
-                    <a href="{{ url('users/' ~ item.user.id) }}">{{ item.user.username }}</a>
+                {% if item.getUser() %}
+                    <a href="{{ url('users/' ~ item.getUser().id) }}">{{ item.getUser().username }}</a>
+                {% else %}
+                    {{ "Guest"|t }}
+                {% endif %}
                 </td>
                 <td data-title="{{ 'Origin'|t }}">
                     {{ item.origin }}

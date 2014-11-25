@@ -10,20 +10,20 @@ class AuditLogService extends BaseApplicationComponent
         // Build specific criteria
         $condition = '';
         $params = array();
-        if($criteria->type) {
+        if(!empty($criteria->type)) {
             $condition .= 'type = :type and ';
             $params[':type'] = $criteria->type;
         }
-        if($criteria->status) {
+        if(!empty($criteria->status)) {
             $condition .= 'status = :status and ';
             $params[':status'] = $criteria->status;
         }
-        if($criteria->search) {
+        if(!empty($criteria->search)) {
             $condition .= 'origin like :search and ';
             $params[':search'] = '%' . addcslashes($criteria->search, '%_') . '%';
         }
         $condition = substr($condition, 0, -5);
-    
+            
         // Get logs from record
         return AuditLogModel::populateModels(AuditLogRecord::model()->findAll(array(
             'order'     => 'id desc',

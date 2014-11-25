@@ -28,7 +28,7 @@ class AuditLogModel extends BaseElementModel
         return array_merge(parent::defineAttributes(), array(
             'id'        => AttributeType::Number,
             'type'      => AttributeType::String,
-            'user'      => AttributeType::Number,
+            'userId'    => AttributeType::Number,
             'origin'    => AttributeType::String,
             'before'    => AttributeType::Mixed,
             'after'     => AttributeType::Mixed,
@@ -40,6 +40,11 @@ class AuditLogModel extends BaseElementModel
     public function getStatus()
     {
         return $this->status;
+    }
+    
+    public function getUser()
+    {
+        return craft()->users->getUserById($this->userId);
     }
     
 }
