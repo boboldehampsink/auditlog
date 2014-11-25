@@ -11,7 +11,7 @@ class AuditLogPlugin extends BasePlugin
 
     function getVersion()
     {
-        return '0.2.6';
+        return '0.2.7';
     }
 
     function getDeveloper()

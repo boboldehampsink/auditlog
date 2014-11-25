@@ -16,6 +16,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.2.7###
+ - Fixed origin url in some cases
+
 ###0.2.6###
  - Better object parsing
 
