@@ -28,17 +28,40 @@ class AuditLogElementType extends BaseElementType
     // Define table column names
     public function defineTableAttributes($source = null)
     {
-        return array(
+        
+        // Define default attributes
+        $attributes = array(
             'type'        => Craft::t('Type'),
             'user'        => Craft::t('User'),
             'origin'      => Craft::t('Origin'),
-            'dateUpdated' => Craft::t('Modified'),
-            'changes'     => Craft::t('Changes')
+            'dateUpdated' => Craft::t('Modified')
         );
+        
+        // Allow plugins to modify the attributes
+        craft()->plugins->call('modifyAuditLogTableAttributes', array(&$attributes, $source));
+        
+        // Set changes at last
+        $attributes['changes'] = Craft::t('Changes');
+        
+        // Return the attributes
+        return $attributes;
+        
     }
     
     public function getTableAttributeHtml(BaseElementModel $element, $attribute)
     {
+    
+        // First give plugins a chance to set this
+        $pluginAttributeHtml = craft()->plugins->callFirst('getAuditLogTableAttributeHtml', array($element, $attribute), true);
+
+        // Check if that had a valid result
+        if($pluginAttributeHtml) {
+        
+            // Return it
+            return $pluginAttributeHtml;
+            
+        }
+    
         switch ($attribute)
         {
             case 'dateCreated':
