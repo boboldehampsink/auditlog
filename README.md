@@ -21,6 +21,7 @@ Changelog
  - Added a date range selector
  - Made sorting work
  - Added ModifyAuditLogTableAttributes and getAuditLogTableAttributeHtml hooks
+
 Warning! This version is updated for Craft 2.3 and does NOT work on Craft 2.2
 
 ###0.2.8###
