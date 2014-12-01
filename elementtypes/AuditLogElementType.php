@@ -129,13 +129,53 @@ class AuditLogElementType extends BaseElementType
             'context'             => $context,
             'elementType'         => new ElementTypeVariable($this),
             'disabledElementIds'  => $disabledElementIds,
-            'attributes'          => $this->defineTableAttributes($sourceKey),
-            'elements'            => craft()->auditLog->log($criteria, $viewState),
             'showCheckboxes'      => $showCheckboxes,
         );
-       
+        
+        // In case of "score" (searching)
+        if(!empty($viewState['order']) && $viewState['order'] == 'score') {
+        
+            // Order by id
+            $criteria->order = 'id';
+            
+        } else {
+        
+            // Get sortable attribuets
+            $sortableAttributes = $this->defineSortableAttributes();
+
+            if($sortableAttributes) {
+            
+                // Get order and sort
+                $order = (!empty($viewState['order']) && isset($sortableAttributes[$viewState['order']])) ? $viewState['order'] : array_shift(array_keys($sortableAttributes));
+                $sort  = (!empty($viewState['sort']) && in_array($viewState['sort'], array('asc', 'desc'))) ? $viewState['sort'] : 'asc';
+                
+                // Set sort on criteria
+                $criteria->order = $order.' '.$sort;
+                
+            }
+            
+        }
+
+        switch($viewState['mode']) {
+        
+            case 'table':
+            
+                // Get the table columns
+                $variables['attributes'] = $this->defineTableAttributes($sourceKey);
+
+                break;
+                
+        }
+
+        // Get elements
+        $variables['elements'] = craft()->auditLog->log($criteria);
+           
+        // Get template
         $template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
+        
+        // Return template
         return craft()->templates->render($template, $variables);
+        
     }
     
     // Set sortable attributes

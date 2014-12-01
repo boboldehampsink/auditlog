@@ -4,7 +4,7 @@ namespace Craft;
 class AuditLogService extends BaseApplicationComponent 
 {
 
-    public function log($criteria, $viewState = false)
+    public function log($criteria)
     {
         // Build specific criteria
         $condition = '';
@@ -18,11 +18,6 @@ class AuditLogService extends BaseApplicationComponent
         // Default today
         if(empty($criteria->before)) {
             $criteria->before = array('date' => DateTimeHelper::currentUTCDateTime());
-        }
-        
-        // Sorting
-        if($viewState) {
-            $criteria->order = $viewState['order'] . ' ' . $viewState['sort'];
         }
         
         // Check for date after
