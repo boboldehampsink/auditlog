@@ -74,7 +74,9 @@ class AuditLogElementType extends BaseElementType
             'userId'      => AttributeType::Number,
             'origin'      => AttributeType::String,
             'modified'    => AttributeType::DateTime,
-            'status'      => AttributeType::String
+            'status'      => AttributeType::String,
+            'before'      => AttributeType::DateTime,
+            'after'       => AttributeType::DateTime
         );
     }
     
@@ -128,12 +130,30 @@ class AuditLogElementType extends BaseElementType
             'elementType'         => new ElementTypeVariable($this),
             'disabledElementIds'  => $disabledElementIds,
             'attributes'          => $this->defineTableAttributes($sourceKey),
-            'elements'            => craft()->auditLog->log($criteria),
+            'elements'            => craft()->auditLog->log($criteria, $viewState),
             'showCheckboxes'      => $showCheckboxes,
         );
        
         $template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
         return craft()->templates->render($template, $variables);
+    }
+    
+    // Set sortable attributes
+    public function defineSortableAttributes()
+    {
+        
+        // Set modified first
+        $attributes['dateUpdated'] = Craft::t('Modified');
+    
+        // Get table attributes
+        $attributes = array_merge($attributes, $this->defineTableAttributes());
+        
+        // Unset unsortable attributes
+        unset($attributes['user'], $attributes['changes']);
+        
+        // Return attributes
+        return $attributes;
+    
     }
 
 }
