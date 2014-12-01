@@ -10,16 +10,6 @@ class AuditLogService extends BaseApplicationComponent
         $condition = '';
         $params = array();
         
-        // Default -7 days
-        if(empty($criteria->after)) {
-            $criteria->after = array('date' => DateTimeHelper::fromString('-7 days'));
-        }
-        
-        // Default today
-        if(empty($criteria->before)) {
-            $criteria->before = array('date' => DateTimeHelper::currentUTCDateTime());
-        }
-        
         // Check for date after
         if(!empty($criteria->after)) {
             $condition .= 'dateUpdated > :after and ';

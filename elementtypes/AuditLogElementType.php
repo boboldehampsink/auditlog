@@ -61,32 +61,45 @@ class AuditLogElementType extends BaseElementType
             return $pluginAttributeHtml;
             
         }
-    
+        
+        // Modify custom attributes
         switch ($attribute)
         {
+        
+            // Format dates
             case 'dateCreated':
             case 'dateUpdated':
             {
                 return craft()->dateFormatter->formatDateTime($element->$attribute);
             }
+            
+            // Return clickable user link
             case 'user':
             {
                 $user = $element->getUser();
                 return $user ? '<a href="' . $user->getCpEditUrl() . '">' . $user . '</a>' : Craft::t('Guest');
             }
+            
+            // Return clickable event origin
             case 'origin':
             {
                 return '<a href="' . preg_replace('/' . craft()->config->get('cpTrigger') . '\//', '', UrlHelper::getUrl($element->origin), 1) . '">' . $element->origin . '</a>';
             }
+            
+            // Return view changes button
             case 'changes':
             {
                 return '<a class="btn" href="' . UrlHelper::getCpUrl('auditlog/' . $element->id) . '">' . Craft::t('View') . '</a>';
             }
+            
+            // Default behavior
             default:
             {
                 return $element->$attribute;
             }
+            
         }
+        
     }
     
     // Define criteria
