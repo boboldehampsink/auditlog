@@ -16,6 +16,14 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.3.0###
+ - Removed ability to clear log - you can uninstall the plugin to do this
+ - Added a date range selector
+ - Made sorting work
+ - Added ModifyAuditLogTableAttributes and getAuditLogTableAttributeHtml hooks
+
+Warning! This version is updated for Craft 2.3 and does NOT work on Craft 2.2
+
 ###0.2.8###
  - Fixed a bug where the user couldn't be shown in some cases
 

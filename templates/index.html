@@ -2,12 +2,93 @@
 {% set title = "Audit Log"|t %}
 {% set elementType = 'AuditLog' %}
 
+{% block initCss %}
+.buttons {
+    margin: 10px 0px;
+}
+.buttons th, .buttons td {
+    padding: 0px 0px 5px 0px;
+}
+{% endblock %}
+{% includeCss block('initCss') %}
+
 {% block sidebar %}
     {% if currentUser.admin %}
+    <nav>
+        <ul>
+            <li class="heading"><span>{{ "Date range"|t }}</span></li>
+        </ul>
+    </nav>
     <div class="buttons">
-        <a class="btn submit" data-icon="refresh" href="{{ actionUrl('auditLog/clear') }}" onclick="return confirm('{{ "Are you sure you want to clear all logs?"|t }}')">{{ "Clear"|t }}</a>
+        <form method="post" accept-charset="utf-8">
+            <input type="hidden" name="elementType" value="AuditLog">
+            <table>
+                <tr>
+                    <th style="width: 40%;">{{ "From"|t }}</th>
+                    <td>
+                        {% include '_includes/forms/date' with {
+                            'id': 'auditlog-modified-from',
+                            'value': now|date_modify('-7 days')
+                        } %}
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 40%;">{{ "To"|t }}</th>
+                    <td>
+                        {% include '_includes/forms/date' with {
+                            'id': 'auditlog-modified-to',
+                            'value': now
+                        } %}
+                    </td>
+                </tr>
+            </table>
+        </form>
     </div>
+    <nav>
+        <ul>
+            <li class="heading"><span>{{ "Log"|t }}</span></li>
+        </ul>
+    </nav>
     {% endif %}
 
     {{ parent() }}
+{% endblock %}
+
+{% block initJs %}
+// Init with datepicker values
+Craft.elementIndex = Craft.createElementIndex('AuditLog', $('#main'), {
+	context:        'index',
+	showStatusMenu: 'auto',
+	showLocaleMenu: 'auto',
+	storageKey:     'elementindex.AuditLog',
+	criteria: {
+	    after: {
+	        date: $('#auditlog-modified-from-date').val()
+	    },
+	    before: {
+	        date: $('#auditlog-modified-to-date').val()
+	    }
+	}
+})
+
+// Sort descending
+Craft.elementIndex.setSelecetedSourceState('sort', 'desc');
+
+// When a datepicker changes
+$(document).on('change', 'input.hasDatepicker', function() {
+    
+    // Get new criteria values
+    Craft.elementIndex.settings.criteria = {
+        after: {
+            date: $('#auditlog-modified-from-date').val()
+        },
+        before: {
+            date: $('#auditlog-modified-to-date').val()
+        }
+    };
+    
+    // Update elements
+    Craft.elementIndex.updateElements();
+	        
+});
 {% endblock %}

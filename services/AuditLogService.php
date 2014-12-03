@@ -6,30 +6,44 @@ class AuditLogService extends BaseApplicationComponent
 
     public function log($criteria)
     {
-    
         // Build specific criteria
         $condition = '';
         $params = array();
+        
+        // Check for date after
+        if(!empty($criteria->after)) {
+            $condition .= 'dateUpdated > :after and ';
+            $params[':after'] = DateTimeHelper::formatTimeForDb($criteria->after);
+        }
+        
+        // Check for date before
+        if(!empty($criteria->before)) {
+            $condition .= 'dateUpdated < :before and ';
+            $params[':before'] = DateTimeHelper::formatTimeForDb($criteria->before);
+        }
+        
+        // Check for type
         if(!empty($criteria->type)) {
             $condition .= 'type = :type and ';
             $params[':type'] = $criteria->type;
         }
+        
+        // Check for status
         if(!empty($criteria->status)) {
             $condition .= 'status = :status and ';
             $params[':status'] = $criteria->status;
         }
+        
+        // Search
         if(!empty($criteria->search)) {
             $condition .= 'origin like :search and ';
             $params[':search'] = '%' . addcslashes($criteria->search, '%_') . '%';
         }
-        $condition = substr($condition, 0, -5);
-            
+                    
         // Get logs from record
         return AuditLogModel::populateModels(AuditLogRecord::model()->findAll(array(
-            'order'     => 'id desc',
-            'limit'     => $criteria->limit,
-            'offset'    => $criteria->offset,
-            'condition' => $condition,
+            'order'     => $criteria->order,
+            'condition' => substr($condition, 0, -5),
             'params'    => $params
         )));
     
