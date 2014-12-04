@@ -106,6 +106,14 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             'id' => array(
                 'label' => Craft::t('ID'),
                 'value' => $category->id
+            ),
+            'title' => array(
+                'label' => Craft::t('Title'),
+                'value' => $category->title
+            ),
+            'group' => array(
+                'label' => Craft::t('Group'),
+                'value' => $category->group->name
             )
         );
     

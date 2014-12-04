@@ -101,11 +101,35 @@ class AuditLog_UserService extends BaseApplicationComponent
     public function fields(UserModel $user, $empty = false)
     {
     
+        // Check if we are saving new groups
+        $groupIds = craft()->request->getPost('groups', false);
+        
+        // If this is before saving, or no groups have changed
+        if(!count($this->_before) || !$groupIds) {
+        
+            // Get user's groups
+            $groups = craft()->userGroups->getGroupsByUserId($user->id);
+            
+        } else {
+        
+            // This is after saving
+            // Get posted groups
+            $groups = array();
+            foreach($groupIds as $id) {
+                $groups[] = craft()->userGroups->getGroupById($id);
+            }
+            
+        }
+    
         // Always save id
         $fields = array(
             'id' => array(
                 'label' => Craft::t('ID'),
                 'value' => $user->id
+            ),
+            'groups' => array(
+                'label' => Craft::t('Groups'),
+                'value' => implode(', ', $groups)
             )
         );
     
