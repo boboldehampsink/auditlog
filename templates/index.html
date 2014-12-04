@@ -3,55 +3,48 @@
 {% set elementType = 'AuditLog' %}
 
 {% block initCss %}
-.buttons {
-    margin: 10px 0px;
+.daterange {
+    margin-top: 5px;
 }
-.buttons th, .buttons td {
+.daterange th, .daterange td {
     padding: 0px 0px 5px 0px;
 }
 {% endblock %}
 {% includeCss block('initCss') %}
 
 {% block sidebar %}
-    {% if currentUser.admin %}
+    <div class="buttons first">
+        <a class="btn submit" id="auditlog-download-csv" data-icon="download" href="javascript:void(0)">{{ "Download CSV"|t }}</a>
+    </div>
+    {{ parent() }}
     <nav>
         <ul>
             <li class="heading"><span>{{ "Date range"|t }}</span></li>
         </ul>
     </nav>
-    <div class="buttons">
-        <form method="post" accept-charset="utf-8">
-            <input type="hidden" name="elementType" value="AuditLog">
-            <table>
-                <tr>
-                    <th style="width: 40%;">{{ "From"|t }}</th>
-                    <td>
-                        {% include '_includes/forms/date' with {
-                            'id': 'auditlog-modified-from',
-                            'value': now|date_modify('-7 days')
-                        } %}
-                    </td>
-                </tr>
-                <tr>
-                    <th style="width: 40%;">{{ "To"|t }}</th>
-                    <td>
-                        {% include '_includes/forms/date' with {
-                            'id': 'auditlog-modified-to',
-                            'value': now
-                        } %}
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <nav>
-        <ul>
-            <li class="heading"><span>{{ "Log"|t }}</span></li>
-        </ul>
-    </nav>
-    {% endif %}
-
-    {{ parent() }}
+    <form method="post" accept-charset="utf-8">
+        <input type="hidden" name="elementType" value="AuditLog">
+        <table class="daterange">
+            <tr>
+                <th style="width: 40%;">{{ "From"|t }}</th>
+                <td>
+                    {% include '_includes/forms/date' with {
+                        'id': 'auditlog-modified-from',
+                        'value': now|date_modify('-7 days')
+                    } %}
+                </td>
+            </tr>
+            <tr>
+                <th style="width: 40%;">{{ "To"|t }}</th>
+                <td>
+                    {% include '_includes/forms/date' with {
+                        'id': 'auditlog-modified-to',
+                        'value': now
+                    } %}
+                </td>
+            </tr>
+        </table>
+    </form>
 {% endblock %}
 
 {% block initJs %}
@@ -73,6 +66,23 @@ Craft.elementIndex = Craft.createElementIndex('AuditLog', $('#main'), {
 
 // Sort descending
 Craft.elementIndex.setSelecetedSourceState('sort', 'desc');
+
+// When downloading a csv
+$('#auditlog-download-csv').click(function(e) {
+
+    // Create a form on the fly
+    var form = $(this).after('<form method="post"><input type="hidden" name="action" value="auditLog/download"></form>').next('form');
+    
+    // Add controller data
+    var params = decodeURIComponent($.param(Craft.elementIndex.getControllerData())).split('&');
+    $.each(params, function(key, value) {
+        $(form).append('<input type="hidden" name="' + value.split('=')[0] + '" value="' + value.split('=')[1] + '">');
+    });
+    
+    // Submit the form and dissappear again
+    $(form).submit().remove();
+    
+});
 
 // When a datepicker changes
 $(document).on('change', 'input.hasDatepicker', function() {
