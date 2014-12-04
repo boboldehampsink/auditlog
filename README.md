@@ -7,6 +7,12 @@ Features:
  - Log Entries, Users and Categories
  - View exact details on what fields have changed
  - View who changed what on what page
+ - Export an Audit Log CSV
+ - Search, filter and use date ranges to find log entries
+ - Has hooks that you can use to extend this plugin
+   - getAuditLogTableAttributeHtml
+   - modifyAuditLogTableAttributes
+   - modifyAuditLogSortableAttributes
  
 Roadmap:
  - Log more ElementTypes (Tags, Globals, Assets)
@@ -18,7 +24,7 @@ Changelog
 =================
 ###0.4.0###
  - Added the ability to download a csv of the log
- - Log readable info, like Category Title & Group, Section Name and User Groups
+ - Log more readable info, like Category Title & Group, Section Name and User Groups
  - Fixed date ranges not being accurate
  - Added a modifyAuditLogSortableAttributes hook
 
@@ -26,7 +32,7 @@ Changelog
  - Removed ability to clear log - you can uninstall the plugin to do this
  - Added a date range selector
  - Made sorting work
- - Added ModifyAuditLogTableAttributes and getAuditLogTableAttributeHtml hooks
+ - Added modifyAuditLogTableAttributes and getAuditLogTableAttributeHtml hooks
 
 Warning! This version is updated for Craft 2.3 and does NOT work on Craft 2.2
 
