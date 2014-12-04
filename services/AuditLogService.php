@@ -12,13 +12,13 @@ class AuditLogService extends BaseApplicationComponent
         
         // Check for date after
         if(!empty($criteria->after)) {
-            $condition .= 'dateUpdated > :after and ';
+            $condition .= 'DATE(dateUpdated) >= :after and ';
             $params[':after'] = DateTimeHelper::formatTimeForDb($criteria->after);
         }
         
         // Check for date before
         if(!empty($criteria->before)) {
-            $condition .= 'dateUpdated < :before and ';
+            $condition .= 'DATE(dateUpdated) <= :before and ';
             $params[':before'] = DateTimeHelper::formatTimeForDb($criteria->before);
         }
         
