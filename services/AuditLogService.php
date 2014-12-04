@@ -36,7 +36,7 @@ class AuditLogService extends BaseApplicationComponent
         
         // Search
         if(!empty($criteria->search)) {
-            $condition .= 'origin like :search and ';
+            $condition .= '(`origin` like :search or `before` like :search or `after` like :search) and ';
             $params[':search'] = '%' . addcslashes($criteria->search, '%_') . '%';
         }
                     
