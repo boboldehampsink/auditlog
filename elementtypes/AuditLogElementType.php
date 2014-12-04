@@ -227,6 +227,9 @@ class AuditLogElementType extends BaseElementType
         // Unset unsortable attributes
         unset($attributes['user'], $attributes['changes']);
         
+        // Allow plugins to modify the attributes
+        craft()->plugins->call('modifyAuditLogSortableAttributes', array(&$attributes));
+        
         // Return attributes
         return $attributes;
     
