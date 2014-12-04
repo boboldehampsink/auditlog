@@ -18,6 +18,8 @@ Changelog
 =================
 ###0.4.0###
  - Added the ability to download a csv of the log
+ - Log readable info, like Category Title & Group, Section Name and User Groups
+ - Fixed date ranges not being accurate
  - Added a modifyAuditLogSortableAttributes hook
 
 ###0.3.0###
