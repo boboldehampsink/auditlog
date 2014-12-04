@@ -16,6 +16,10 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.4.0###
+ - Added the ability to download a csv of the log
+ - Added a modifyAuditLogSortableAttributes hook
+
 ###0.3.0###
  - Removed ability to clear log - you can uninstall the plugin to do this
  - Added a date range selector
