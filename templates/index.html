@@ -71,7 +71,7 @@ Craft.elementIndex.setSelecetedSourceState('sort', 'desc');
 $('#auditlog-download-csv').click(function(e) {
 
     // Create a form on the fly
-    var form = $(this).after('<form method="post">{{getCsrfInput()}}<input type="hidden" name="action" value="auditLog/download"></form>').next('form');
+    var form = $(this).after('<form method="post">{{ getCsrfInput() }}<input type="hidden" name="action" value="auditLog/download"></form>').next('form');
 
     // Add controller data
     var params = decodeURIComponent($.param(Craft.elementIndex.getControllerData())).split('&');
