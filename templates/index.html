@@ -71,22 +71,22 @@ Craft.elementIndex.setSelecetedSourceState('sort', 'desc');
 $('#auditlog-download-csv').click(function(e) {
 
     // Create a form on the fly
-    var form = $(this).after('<form method="post"><input type="hidden" name="action" value="auditLog/download"></form>').next('form');
-    
+    var form = $(this).after('<form method="post">{{getCsrfInput()}}<input type="hidden" name="action" value="auditLog/download"></form>').next('form');
+
     // Add controller data
     var params = decodeURIComponent($.param(Craft.elementIndex.getControllerData())).split('&');
     $.each(params, function(key, value) {
         $(form).append('<input type="hidden" name="' + value.split('=')[0] + '" value="' + value.split('=')[1] + '">');
     });
-    
+
     // Submit the form and dissappear again
     $(form).submit().remove();
-    
+
 });
 
 // When a datepicker changes
 $(document).on('change', 'input.hasDatepicker', function() {
-    
+
     // Get new criteria values
     Craft.elementIndex.settings.criteria = {
         after: {
@@ -96,9 +96,9 @@ $(document).on('change', 'input.hasDatepicker', function() {
             date: $('#auditlog-modified-to-date').val()
         }
     };
-    
+
     // Update elements
     Craft.elementIndex.updateElements();
-	        
+
 });
 {% endblock %}
