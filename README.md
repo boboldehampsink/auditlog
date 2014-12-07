@@ -22,6 +22,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.4.1###
+ - Added CSRF protection for CSV downloads
+
 ###0.4.0###
  - Added the ability to download a csv of the log
  - Log more readable info, like Category Title & Group, Section Name and User Groups
