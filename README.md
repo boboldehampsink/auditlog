@@ -22,6 +22,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.4.2###
+ - Fixed source not being selected in CSV download
+
 ###0.4.1###
  - Added CSRF protection for CSV downloads (thanks to Marion Newlevant)
 
