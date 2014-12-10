@@ -176,7 +176,7 @@ class AuditLogElementType extends BaseElementType
             
         } else {
         
-            // Get sortable attribuets
+            // Get sortable attributes
             $sortableAttributes = $this->defineSortableAttributes();
 
             if($sortableAttributes) {

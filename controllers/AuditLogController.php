@@ -10,6 +10,9 @@ class AuditLogController extends BaseController
         // Get criteria
         $criteria = craft()->elements->getCriteria('AuditLog', craft()->request->getParam('criteria'));
         
+        // Get element type
+        $elementType = craft()->elements->getElementType('AuditLog');
+        
         // Get order and sort
         $viewState = craft()->request->getParam('viewState', array(
             'order' => 'id',
@@ -23,13 +26,14 @@ class AuditLogController extends BaseController
         $criteria->search = craft()->request->getParam('search');
         
         // Get source
-        $criteria->source = craft()->request->getParam('source', '*');
+        $sources = $elementType->getSources();
+        $source = craft()->request->getParam('source', '*');
         
+        // Set type
+        $criteria->type = $source != '*' ? $sources[$source]['criteria']['type'] : null;
+                
         // Get data
         $log = craft()->auditLog->log($criteria);
-        
-        // Get element type
-        $elementType = craft()->elements->getElementType('AuditLog');
         
         // Set status attribute
         $attributes['status'] = Craft::t('Status');
