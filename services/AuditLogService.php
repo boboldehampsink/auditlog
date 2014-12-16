@@ -151,13 +151,25 @@ class AuditLogService extends BaseApplicationComponent
     public function elementHasChanged($elementType, $before, $after)
     {
 
-        // Calculate the diffence
-        $diff = array_diff_assoc($before, $after);
+        // Flatten arrays
+        $flatBefore = ArrayHelper::flattenArray($before);
+        $flatAfter  = ArrayHelper::flattenArray($after);
 
-        Craft::dd($diff);
+        // Calculate the diffence
+        $flatDiff = array_diff_assoc($flatAfter, $flatBefore);
+
+        // Expand diff again
+        $expanded = ArrayHelper::expandArray($flatDiff);
+
+        // Add labels once again
+        $diff = array();
+        foreach($expanded as $key => $value) {
+            $diff[$key]['label'] = $before[$key]['label'];
+            $diff[$key]['value'] = $value['value'];
+        }
 
         // If there IS a difference
-        if(count($diff) === 0) {
+        if(count($diff)) {
 
             // Fire an "onElementChanged" event
             Craft::import('plugins.auditlog.events.ElementChangedEvent');
