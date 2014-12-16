@@ -147,5 +147,11 @@ class AuditLogService extends BaseApplicationComponent
         return $data;
     
     }
+
+    // Fires an "onElementChanged" event
+    public function onElementChanged(ElementChangedEvent $event)
+    {
+        $this->raiseEvent('onElementChanged', $event);
+    }
     
 }

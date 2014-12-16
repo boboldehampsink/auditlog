@@ -103,6 +103,16 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             $log->save(false);
         
         });
+
+        // Fire off events in case things have changed
+        if(count(array_diff($this->before, $this->after)) === 0) {
+
+            // Fire an "onElementChanged" event
+            Craft::import('plugins.auditLog.events.ElementChangedEvent');
+            $event = new ElementChangedEvent($this, array('elementType' => ElementType::Category));
+            craft()->auditLog->onElementChanged($event);
+
+        }
         
     }
     
