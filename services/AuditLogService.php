@@ -148,6 +148,29 @@ class AuditLogService extends BaseApplicationComponent
     
     }
 
+    public function elementHasChanged($elementType, $before, $after)
+    {
+
+        // Calculate the diffence
+        $diff = array_diff_assoc($before, $after);
+
+        Craft::dd($diff);
+
+        // If there IS a difference
+        if(count($diff) === 0) {
+
+            // Fire an "onElementChanged" event
+            Craft::import('plugins.auditlog.events.ElementChangedEvent');
+            $event = new ElementChangedEvent($this, array(
+                'elementType' => $elementType,
+                'diff'        => $diff
+            ));
+            $this->onElementChanged($event);
+
+        }
+
+    }
+
     // Fires an "onElementChanged" event
     public function onElementChanged(ElementChangedEvent $event)
     {

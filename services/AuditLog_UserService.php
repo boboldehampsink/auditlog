@@ -65,6 +65,9 @@ class AuditLog_UserService extends BaseApplicationComponent
             
             // Save row
             $log->save(false);
+
+            // Callback
+            craft()->auditLog->elementHasChanged(ElementType::User, craft()->auditLog_user->before, craft()->auditLog_user->after);
         
         });
         
@@ -101,24 +104,11 @@ class AuditLog_UserService extends BaseApplicationComponent
             
             // Save row
             $log->save(false);
+
+            // Callback
+            craft()->auditLog->elementHasChanged(ElementType::User, craft()->auditLog_user->before, craft()->auditLog_user->after);
         
         });
-
-        // Calculate the diffence
-        $diff = array_diff_assoc($this->before, $this->after);
-
-        // If there IS a difference
-        if(count($diff) === 0) {
-
-            // Fire an "onElementChanged" event
-            Craft::import('plugins.auditlog.events.ElementChangedEvent');
-            $event = new ElementChangedEvent($this, array(
-                'elementType' => ElementType::User,
-                'diff'        => $diff
-            ));
-            craft()->auditLog->onElementChanged($event);
-
-        }
         
     }
     
