@@ -104,13 +104,26 @@ class AuditLog_UserService extends BaseApplicationComponent
         
         });
 
-        // Fire off events in case things have changed
-        if(count(array_diff($this->before, $this->after)) === 0) {
+        // Calculate the diffence
+        $diff = array_diff_assoc($this->before, $this->after);
+
+        // If there IS a difference
+        if(count($diff) === 0) {
 
             // Fire an "onElementChanged" event
             Craft::import('plugins.auditLog.events.ElementChangedEvent');
-            $event = new ElementChangedEvent($this, array('elementType' => ElementType::User));
+            $event = new ElementChangedEvent($this, array(
+                'elementType' => ElementType::User
+            ));
             craft()->auditLog->onElementChanged($event);
+
+            // Fire an "onFieldChanged" event
+            Craft::import('plugins.auditLog.events.FieldChangedEvent');
+            $event = new FieldChangedEvent($this, array(
+                'elementType' => ElementType::User,
+                'diff'        => $diff
+            ));
+            craft()->auditLog->onFieldChanged($event);
 
         }
         
