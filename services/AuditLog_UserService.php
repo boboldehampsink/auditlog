@@ -171,7 +171,7 @@ class AuditLog_UserService extends BaseApplicationComponent
         
                 $fields[$handle] = array(
                     'label' => $attributes[$handle],
-                    'value' => StringHelper::arrayToString(is_array($value) ? array_filter($value) : $value, ', ')
+                    'value' => StringHelper::arrayToString(is_array($value) ? array_filter(ArrayHelper::flattenArray($value), 'strlen') : $value, ', ')
                 );
                 
             }

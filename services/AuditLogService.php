@@ -136,12 +136,12 @@ class AuditLogService extends BaseApplicationComponent
         
         // If it's an array, make it a string
         if(is_array($data)) {
-            $data = StringHelper::arrayToString(array_filter($data), ', ');
+            $data = StringHelper::arrayToString(array_filter(ArrayHelper::flattenArray($data), 'strlen'), ', ');
         }
         
         // If it's an object, make it a string
         if(is_object($data)) {
-            $data = StringHelper::arrayToString(array_filter(get_object_vars($data)), ', ');
+            $data = StringHelper::arrayToString(array_filter(ArrayHelper::flattenArray(get_object_vars($data)), 'strlen'), ', ');
         }
         
         return $data;
