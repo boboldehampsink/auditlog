@@ -111,7 +111,7 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         if(count($diff) === 0) {
 
             // Fire an "onElementChanged" event
-            Craft::import('plugins.auditLog.events.ElementChangedEvent');
+            Craft::import('plugins.auditlog.events.ElementChangedEvent');
             $event = new ElementChangedEvent($this, array(
                 'elementType' => ElementType::Category,
                 'diff'        => $diff
