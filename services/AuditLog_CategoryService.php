@@ -149,7 +149,7 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         
                 $fields[$handle] = array(
                     'label' => $attributes[$handle],
-                    'value' => StringHelper::arrayToString(array_filter($value), ', ')
+                    'value' => StringHelper::arrayToString(is_array($value) ? array_filter($value) : $value, ', ')
                 );
                 
             }
