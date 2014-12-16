@@ -4,7 +4,8 @@ namespace Craft;
 class AuditLog_UserService extends BaseApplicationComponent 
 {
 
-    public $_before = array();
+    public $before = array();
+    public $after  = array();
 
     public function log()
     {
@@ -21,12 +22,12 @@ class AuditLog_UserService extends BaseApplicationComponent
                 $user = UserModel::populateModel(UserRecord::model()->findById($id));
                 
                 // Get fields
-                craft()->auditLog_user->_before = craft()->auditLog_user->fields($user);
+                craft()->auditLog_user->before = craft()->auditLog_user->fields($user);
                 
             } else {
             
                 // Get fields
-                craft()->auditLog_user->_before = craft()->auditLog_user->fields($event->params['user'], true);
+                craft()->auditLog_user->before = craft()->auditLog_user->fields($event->params['user'], true);
             
             }
                     
@@ -37,6 +38,9 @@ class AuditLog_UserService extends BaseApplicationComponent
         
             // Get saved user
             $user = $event->params['user'];
+
+            // Get fields
+            craft()->auditLog_user->after = craft()->auditLog_user->fields($user);
             
             // New row
             $log = new AuditLogRecord();
@@ -51,10 +55,10 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_user->_before;
+            $log->before = craft()->auditLog_user->before;
             
             // Set after
-            $log->after = craft()->auditLog_user->fields($user);
+            $log->after = craft()->auditLog_user->after;
             
             // Set status
             $log->status = ($event->params['isNewUser'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
@@ -69,6 +73,10 @@ class AuditLog_UserService extends BaseApplicationComponent
         
             // Get deleted user
             $user = $event->params['user'];
+
+            // Get fields
+            craft()->auditLog_user->before = craft()->auditLog_user->fields($user);
+            craft()->auditLog_user->after  = craft()->auditLog_user->fields($user, true);
             
             // New row
             $log = new AuditLogRecord();
@@ -83,10 +91,10 @@ class AuditLog_UserService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_user->fields($user);
+            $log->before = craft()->auditLog_user->before;
             
             // Set after
-            $log->after = craft()->auditLog_user->fields($user, true);
+            $log->after = craft()->auditLog_user->after;
             
             // Set status
             $log->status = AuditLogModel::DELETED;
@@ -105,7 +113,7 @@ class AuditLog_UserService extends BaseApplicationComponent
         $groupIds = craft()->request->getPost('groups', false);
         
         // If this is before saving, or no groups have changed
-        if(!count($this->_before) || !$groupIds) {
+        if(!count($this->before) || !$groupIds) {
         
             // Get user's groups
             $groups = craft()->userGroups->getGroupsByUserId($user->id);

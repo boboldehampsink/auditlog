@@ -4,7 +4,8 @@ namespace Craft;
 class AuditLog_CategoryService extends BaseApplicationComponent 
 {
 
-    public $_before = array();
+    public $before = array();
+    public $after  = array();
 
     public function log()
     {
@@ -21,12 +22,12 @@ class AuditLog_CategoryService extends BaseApplicationComponent
                 $category = CategoryModel::populateModel(CategoryRecord::model()->findById($id));
                 
                 // Get fields
-                craft()->auditLog_category->_before = craft()->auditLog_category->fields($category);
+                craft()->auditLog_category->before = craft()->auditLog_category->fields($category);
                 
             } else {
             
                 // Get fields
-                craft()->auditLog_category->_before = craft()->auditLog_category->fields($event->params['category'], true);
+                craft()->auditLog_category->before = craft()->auditLog_category->fields($event->params['category'], true);
             
             }
                     
@@ -37,6 +38,9 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         
             // Get saved category
             $category = $event->params['category'];
+
+            // Get fields
+            craft()->auditLog_category->after = craft()->auditLog_category->fields($category);
             
             // New row
             $log = new AuditLogRecord();
@@ -51,10 +55,10 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_category->_before;
+            $log->before = craft()->auditLog_category->before;
             
             // Set after
-            $log->after = craft()->auditLog_category->fields($category);
+            $log->after = craft()->auditLog_category->after;
             
             // Set status
             $log->status = ($event->params['isNewCategory'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
@@ -69,6 +73,10 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         
             // Get deleted category
             $category = $event->params['category'];
+
+            // Get fields
+            craft()->auditLog_category->before = craft()->auditLog_category->fields($category);
+            craft()->auditLog_category->after  = craft()->auditLog_category->fields($category, true);
             
             // New row
             $log = new AuditLogRecord();
@@ -83,10 +91,10 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_category->fields($category);
+            $log->before = craft()->auditLog_category->before;
             
             // Set after
-            $log->after = craft()->auditLog_category->fields($category, true);
+            $log->after = craft()->auditLog_category->after;
             
             // Set status
             $log->status = AuditLogModel::DELETED;

@@ -4,7 +4,8 @@ namespace Craft;
 class AuditLog_EntryService extends BaseApplicationComponent 
 {
 
-    public $_before = array();
+    public $before = array();
+    public $after  = array();
 
     public function log()
     {
@@ -21,12 +22,12 @@ class AuditLog_EntryService extends BaseApplicationComponent
                 $entry = EntryModel::populateModel(EntryRecord::model()->findById($id));
                 
                 // Get fields
-                craft()->auditLog_entry->_before = craft()->auditLog_entry->fields($entry);
+                craft()->auditLog_entry->before = craft()->auditLog_entry->fields($entry);
                 
             } else {
             
                 // Get fields
-                craft()->auditLog_entry->_before = craft()->auditLog_entry->fields($event->params['entry'], true);
+                craft()->auditLog_entry->before = craft()->auditLog_entry->fields($event->params['entry'], true);
             
             }
                     
@@ -37,6 +38,9 @@ class AuditLog_EntryService extends BaseApplicationComponent
         
             // Get saved entry
             $entry = $event->params['entry'];
+
+            // Get fields
+            craft()->auditLog_entry->after = craft()->auditLog_entry->fields($entry);
             
             // New row
             $log = new AuditLogRecord();
@@ -51,10 +55,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_entry->_before;
+            $log->before = craft()->auditLog_entry->before;
             
             // Set after
-            $log->after = craft()->auditLog_entry->fields($entry);
+            $log->after = craft()->auditLog_entry->after;
             
             // Set status
             $log->status = ($event->params['isNewEntry'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
@@ -69,6 +73,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
         
             // Get deleted entry
             $entry = $event->params['entry'];
+
+            // Get fields
+            craft()->auditLog_entry->before = craft()->auditLog_entry->fields($entry);
+            craft()->auditLog_entry->after  = craft()->auditLog_entry->fields($entry, true);
             
             // New row
             $log = new AuditLogRecord();
@@ -83,10 +91,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger') . '/' . craft()->request->path : craft()->request->path;
             
             // Set before
-            $log->before = craft()->auditLog_entry->fields($entry);
+            $log->before = craft()->auditLog_entry->before;
             
             // Set after
-            $log->after = craft()->auditLog_entry->fields($entry, true);
+            $log->after = craft()->auditLog_entry->after;
             
             // Set status
             $log->status = AuditLogModel::DELETED;
