@@ -113,17 +113,10 @@ class AuditLog_EntryService extends BaseApplicationComponent
             // Fire an "onElementChanged" event
             Craft::import('plugins.auditLog.events.ElementChangedEvent');
             $event = new ElementChangedEvent($this, array(
-                'elementType' => ElementType::Entry
-            ));
-            craft()->auditLog->onElementChanged($event);
-
-            // Fire an "onFieldChanged" event
-            Craft::import('plugins.auditLog.events.FieldChangedEvent');
-            $event = new FieldChangedEvent($this, array(
                 'elementType' => ElementType::Entry,
                 'diff'        => $diff
             ));
-            craft()->auditLog->onFieldChanged($event);
+            craft()->auditLog->onElementChanged($event);
 
         }
 
