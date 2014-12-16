@@ -148,7 +148,7 @@ class AuditLogService extends BaseApplicationComponent
     
     }
 
-    public function elementHasChanged($elementType, $before, $after)
+    public function elementHasChanged($elementType, $id, $before, $after)
     {
 
         // Flatten arrays
@@ -175,6 +175,7 @@ class AuditLogService extends BaseApplicationComponent
             Craft::import('plugins.auditlog.events.ElementChangedEvent');
             $event = new ElementChangedEvent($this, array(
                 'elementType' => $elementType,
+                'id'          => $id,
                 'diff'        => $diff
             ));
             $this->onElementChanged($event);

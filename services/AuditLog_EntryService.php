@@ -67,7 +67,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->save(false);
 
             // Callback
-            craft()->auditLog->elementHasChanged(ElementType::Entry, craft()->auditLog_entry->before, craft()->auditLog_entry->after);
+            craft()->auditLog->elementHasChanged(ElementType::Entry, $entry->id, craft()->auditLog_entry->before, craft()->auditLog_entry->after);
         
         });
         
@@ -106,7 +106,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
             $log->save(false);
 
             // Callback
-            craft()->auditLog->elementHasChanged(ElementType::Entry, craft()->auditLog_entry->before, craft()->auditLog_entry->after);
+            craft()->auditLog->elementHasChanged(ElementType::Entry, $entry->id, craft()->auditLog_entry->before, craft()->auditLog_entry->after);
         
         });
 
