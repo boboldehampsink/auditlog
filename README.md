@@ -22,6 +22,12 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.5.0###
+ - Added "onElementChanged" event so you can check if a saved element really changed
+   - This event will also generate a diff between the before and after state of an element
+ - Fix errors that could occur when saving entries and categories anonymously
+ - Clean up arrays before showing, making them more readable
+
 ###0.4.2###
  - Fixed source not being selected in CSV download
 
