@@ -45,8 +45,11 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             // New row
             $log = new AuditLogRecord();
             
+            // Get user
+            $user = craft()->userSession->getUser();
+            
             // Set user id
-            $log->userId = craft()->userSession->getUser()->id;
+            $log->userId = $user ? $user->id : null;
             
             // Set element type
             $log->type = ElementType::Category;
