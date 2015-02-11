@@ -16,15 +16,14 @@ class AuditLogRecord extends BaseRecord
             'origin' => AttributeType::String,
             'before' => AttributeType::Mixed,
             'after'  => AttributeType::Mixed,
-            'status' => AttributeType::String
+            'status' => AttributeType::String,
         );
     }
-    
+
     public function defineRelations()
     {
         return array(
-            'user'    => array(static::BELONGS_TO, 'UserRecord')
+            'user'    => array(static::BELONGS_TO, 'UserRecord'),
         );
     }
-    
 }

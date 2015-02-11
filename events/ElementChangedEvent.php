@@ -1,7 +1,6 @@
 <?php
 namespace Craft;
 
-class ElementChangedEvent extends Event 
+class ElementChangedEvent extends Event
 {
-
 }
