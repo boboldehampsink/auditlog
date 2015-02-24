@@ -6,10 +6,10 @@ namespace Craft;
  *
  * Allows you to log adding/updating/deleting of categories/entries/users.
  *
- * @author    b.oldehampsink@itmundi.nl
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
- * @link      http://github.com/boboldehampsink
+ * @link      http://github.com/boboldehampsink/auditlog
  * @package   craft.plugins.auditlog
  */
 class AuditLogPlugin extends BasePlugin

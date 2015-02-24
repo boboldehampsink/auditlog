@@ -1,9 +1,23 @@
 <?php
 namespace Craft;
 
+/**
+ * Audit Log test
+ *
+ * Tests if the audit log works
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, author
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.auditlog
+ */
 class AuditLogTest extends BaseTest
 {
 
+    /**
+     * Load the plugin component
+     */
     public function setUp()
     {
 
@@ -12,6 +26,9 @@ class AuditLogTest extends BaseTest
         $pluginsService->loadPlugins();
     }
 
+    /**
+     * Test if viewing and parsing works
+     */
     public function testActionDownload()
     {
 

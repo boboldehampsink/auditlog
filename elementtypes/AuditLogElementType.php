@@ -1,21 +1,42 @@
 <?php
 namespace Craft;
 
+/**
+ * Audit Log Element Type
+ *
+ * Makes the log behave as an Element Type
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, author
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.auditlog
+ */
 class AuditLogElementType extends BaseElementType
 {
 
+    /**
+     * The name of the Element Type
+     * @return string
+     */
     public function getName()
     {
         return Craft::t('Audit Log');
     }
 
-    // Return true so we have a status select menu
+    /**
+     * Return true so we have a status select menu
+     * @return boolean
+     */
     public function hasStatuses()
     {
         return true;
     }
 
-    // Define statuses
+    /**
+     * Define statuses
+     * @return array
+     */
     public function getStatuses()
     {
         return array(
@@ -25,7 +46,11 @@ class AuditLogElementType extends BaseElementType
         );
     }
 
-    // Define table column names
+    /**
+     * Define table column names
+     * @param  string $source
+     * @return array
+     */
     public function defineTableAttributes($source = null)
     {
 
@@ -47,6 +72,12 @@ class AuditLogElementType extends BaseElementType
         return $attributes;
     }
 
+    /**
+     * Return table attribute html
+     * @param  BaseElementModel $element
+     * @param  string           $attribute
+     * @return string
+     */
     public function getTableAttributeHtml(BaseElementModel $element, $attribute)
     {
 
@@ -99,7 +130,10 @@ class AuditLogElementType extends BaseElementType
         }
     }
 
-    // Define criteria
+    /**
+     * Define criteria
+     * @return array
+     */
     public function defineCriteriaAttributes()
     {
         return array(
@@ -113,19 +147,31 @@ class AuditLogElementType extends BaseElementType
         );
     }
 
-    // Cancel the elements query
+    /**
+     * Cancel the elements query
+     * @param  DbCommand            $query
+     * @param  ElementCriteriaModel $criteria
+     * @return boolean
+     */
     public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
     {
         return false;
     }
 
-    // Create element from row
+    /**
+     * Create element from row
+     * @param  array $row
+     * @return AuditLogModel
+     */
     public function populateElementModel($row)
     {
         return AuditLogModel::populateModel($row);
     }
 
-    // Define the sources
+    /**
+     * Define the sources
+     * @param  string $context
+     */
     public function getSources($context = null)
     {
 
@@ -171,7 +217,17 @@ class AuditLogElementType extends BaseElementType
         }
     }
 
-    // Return the html
+    /**
+     * Return the html
+     * @param  array $criteria
+     * @param  array $disabledElementIds
+     * @param  array $viewState
+     * @param  string $sourceKey
+     * @param  string $context
+     * @param  boolean $includeContainer
+     * @param  boolean $showCheckboxes
+     * @return string
+     */
     public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
     {
         $variables = array(
@@ -224,7 +280,10 @@ class AuditLogElementType extends BaseElementType
         return craft()->templates->render($template, $variables);
     }
 
-    // Set sortable attributes
+    /**
+     * Set sortable attributes
+     * @return array
+     */
     public function defineSortableAttributes()
     {
 

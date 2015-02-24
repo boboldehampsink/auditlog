@@ -1,28 +1,55 @@
 <?php
 namespace Craft;
 
+/**
+ * Audit Log Model
+ *
+ * Contains the log data aswell as some constants
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, author
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.auditlog
+ */
 class AuditLogModel extends BaseElementModel
 {
 
-    // Statuses
+    /**
+     * Statuses
+     */
     const CREATED   = 'live';
     const MODIFIED  = 'pending';
     const DELETED   = 'expired';
 
-    // Fieldtypes
+    /**
+     * Fieldtypes
+     */
     const FieldTypeEntries     = 'Entries';
     const FieldTypeCategories  = 'Categories';
     const FieldTypeAssets      = 'Assets';
     const FieldTypeUsers       = 'Users';
     const FieldTypeLightswitch = 'Lightswitch';
 
+    /**
+     * Element Type name
+     * @var string
+     */
     protected $elementType = 'AuditLog';
 
+    /**
+     * Return the title of this model
+     * @return string
+     */
     public function getTitle()
     {
         return $this->type;
     }
 
+    /**
+     * Return the model's attributes
+     * @return array
+     */
     protected function defineAttributes()
     {
         return array_merge(parent::defineAttributes(), array(
@@ -37,11 +64,19 @@ class AuditLogModel extends BaseElementModel
         ));
     }
 
+    /**
+     * Return the model's status
+     * @return string
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * Return the model's user
+     * @return UserModel
+     */
     public function getUser()
     {
         return craft()->users->getUserById($this->userId);

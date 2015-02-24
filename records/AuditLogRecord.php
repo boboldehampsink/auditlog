@@ -1,14 +1,33 @@
 <?php
 namespace Craft;
 
+/**
+ * Audit Log Record
+ *
+ * Represents the Audit Log tables in the database
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, author
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.auditlog
+ */
 class AuditLogRecord extends BaseRecord
 {
 
+    /**
+     * Return the table name
+     * @return string
+     */
     public function getTableName()
     {
         return 'auditlog';
     }
 
+    /**
+     * Return the table fields
+     * @return array
+     */
     protected function defineAttributes()
     {
         return array(
@@ -20,6 +39,10 @@ class AuditLogRecord extends BaseRecord
         );
     }
 
+    /**
+     * Define the table relations
+     * @return array
+     */
     public function defineRelations()
     {
         return array(

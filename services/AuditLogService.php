@@ -1,9 +1,25 @@
 <?php
 namespace Craft;
 
+/**
+ * Audit Log service
+ *
+ * Contains logics for logging
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, author
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.auditlog
+ */
 class AuditLogService extends BaseApplicationComponent
 {
 
+    /**
+     * Show log with criteria
+     * @param  object $criteria
+     * @return array
+     */
     public function log($criteria)
     {
         // Build specific criteria
@@ -48,6 +64,11 @@ class AuditLogService extends BaseApplicationComponent
         )));
     }
 
+    /**
+     * View a specific log item
+     * @param  int $id
+     * @return AuditLogModel
+     */
     public function view($id)
     {
 
@@ -76,7 +97,12 @@ class AuditLogService extends BaseApplicationComponent
         return $log;
     }
 
-    // Parse field values
+    /**
+     * Parse field values
+     * @param  string $handle
+     * @param  mixed $data
+     * @return string
+     */
     public function parseFieldData($handle, $data)
     {
 
@@ -140,6 +166,13 @@ class AuditLogService extends BaseApplicationComponent
         return $data;
     }
 
+    /**
+     * Check if an element has changed while saving
+     * @param  string $elementType
+     * @param  int $id
+     * @param  array $before
+     * @param  array $after
+     */
     public function elementHasChanged($elementType, $id, $before, $after)
     {
 
@@ -164,8 +197,7 @@ class AuditLogService extends BaseApplicationComponent
         if (count($diff)) {
 
             // Fire an "onElementChanged" event
-            Craft::import('plugins.auditlog.events.ElementChangedEvent');
-            $event = new ElementChangedEvent($this, array(
+            $event = new Event($this, array(
                 'elementType' => $elementType,
                 'id'          => $id,
                 'diff'        => $diff,
@@ -174,14 +206,20 @@ class AuditLogService extends BaseApplicationComponent
         }
     }
 
-    // Fires an "onElementChanged" event
-    public function onElementChanged(ElementChangedEvent $event)
+    /**
+     * Fires an "onElementChanged" event
+     * @param  Event  $event
+     */
+    public function onElementChanged(Event $event)
     {
         $this->raiseEvent('onElementChanged', $event);
     }
 
-    // Fires an "onFieldChanged" event
-    public function onFieldChanged(FieldChangedEvent $event)
+    /**
+     * Fires an "onFieldChanged" event
+     * @param  Event $event
+     */
+    public function onFieldChanged(Event $event)
     {
         $this->raiseEvent('onFieldChanged', $event);
     }
