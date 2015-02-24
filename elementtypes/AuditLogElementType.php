@@ -128,30 +128,47 @@ class AuditLogElementType extends BaseElementType
     // Define the sources
     public function getSources($context = null)
     {
-        return array(
+
+        // Get plugin settings
+        $settings = craft()->plugins->getPlugin('AuditLog')->getSettings();
+
+        // Set default sources
+        $sources = array(
             '*' => array(
                 'label'      => Craft::t('All logs'),
             ),
             array('heading' => Craft::t('Elements')),
-            'categories' => array(
-                'label'      => Craft::t('Categories'),
-                'criteria'   => array(
-                    'type'   => ElementType::Category,
-                ),
-            ),
-            'entries' => array(
+        );
+
+        // Show sources for entries when enabled
+        if (in_array(ElementType::Entry, $settings->enabled)) {
+            $sources['entries'] = array(
                 'label'      => Craft::t('Entries'),
                 'criteria'   => array(
                     'type'   => ElementType::Entry,
                 ),
-            ),
-            'users' => array(
+            );
+        }
+
+        // Show sources for categories when enabled
+        if (in_array(ElementType::Category, $settings->enabled)) {
+            $sources['categories'] = array(
+                'label'      => Craft::t('Categories'),
+                'criteria'   => array(
+                    'type'   => ElementType::Category,
+                ),
+            );
+        }
+
+        // Show sources for users when enabled
+        if (in_array(ElementType::User, $settings->enabled)) {
+            $sources['users'] = array(
                 'label'      => Craft::t('Users'),
                 'criteria'   => array(
                     'type'   => ElementType::User,
                 ),
-            ),
-        );
+            );
+        }
     }
 
     // Return the html

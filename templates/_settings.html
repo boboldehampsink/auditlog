@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.checkboxField({
+      id: 'entry-enabled',
+      name: 'enabled[]',
+      label: 'Enable Entry Logging'|t,
+      value: 'Entry',
+      checked: 'Entry' in settings.enabled,
+      first: true,
+      instructions: 'Enable logging for this Element Type.'|t
+}) }}
+
+{{ forms.checkboxField({
+      id: 'category-enabled',
+      name: 'enabled[]',
+      label: 'Enable Category Logging'|t,
+      value: 'Category',
+      checked: 'Category' in settings.enabled,
+      instructions: 'Enable logging for this Element Type.'|t
+}) }}
+
+{{ forms.checkboxField({
+      id: 'user-enabled',
+      name: 'enabled[]',
+      label: 'Enable User Logging'|t,
+      value: 'User',
+      checked: 'User' in settings.enabled,
+      instructions: 'Enable logging for this Element Type.'|t
+}) }}
