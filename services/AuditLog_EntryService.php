@@ -1,34 +1,36 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Entry service
+ * Audit Log Entry service.
  *
  * Contains logics for logging entries
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, author
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.auditlog
  */
 class AuditLog_EntryService extends BaseApplicationComponent
 {
-
     /**
-     * Catch value before saving
+     * Catch value before saving.
+     *
      * @var array
      */
     public $before = array();
 
     /**
-     * Catch value after saving
+     * Catch value after saving.
+     *
      * @var array
      */
     public $after  = array();
 
     /**
-     * Initialize the category saving/deleting events
+     * Initialize the category saving/deleting events.
      */
     public function log()
     {
@@ -136,9 +138,11 @@ class AuditLog_EntryService extends BaseApplicationComponent
     }
 
     /**
-     * Parse entry fields
-     * @param  EntryModel $entry
-     * @param  boolean    $empty
+     * Parse entry fields.
+     *
+     * @param EntryModel $entry
+     * @param bool       $empty
+     *
      * @return array
      */
     public function fields(EntryModel $entry, $empty = false)

@@ -1,22 +1,22 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Controller
+ * Audit Log Controller.
  *
  * Handles requests for the Audit Log
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink/auditlog
- * @package   craft.plugins.auditlog
  */
 class AuditLogController extends BaseController
 {
-
     /**
-     * Download a CSV of the changes list
+     * Download a CSV of the changes list.
      */
     public function actionDownload()
     {

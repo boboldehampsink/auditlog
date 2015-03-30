@@ -1,22 +1,23 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Plugin
+ * Audit Log Plugin.
  *
  * Allows you to log adding/updating/deleting of categories/entries/users.
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink/auditlog
- * @package   craft.plugins.auditlog
  */
 class AuditLogPlugin extends BasePlugin
 {
-
     /**
-     * Return the plugin name
+     * Return the plugin name.
+     *
      * @return string
      */
     public function getName()
@@ -25,7 +26,8 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Return the plugin version
+     * Return the plugin version.
+     *
      * @return string
      */
     public function getVersion()
@@ -34,7 +36,8 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Return the developer name
+     * Return the developer name.
+     *
      * @return string
      */
     public function getDeveloper()
@@ -43,7 +46,8 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Return the developer URL
+     * Return the developer URL.
+     *
      * @return string
      */
     public function getDeveloperUrl()
@@ -52,8 +56,9 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Tell Craft we have a Control Panel section
-     * @return boolean
+     * Tell Craft we have a Control Panel section.
+     *
+     * @return bool
      */
     public function hasCpSection()
     {
@@ -61,7 +66,8 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Register routes for Control Panel
+     * Register routes for Control Panel.
+     *
      * @return array
      */
     public function registerCpRoutes()
@@ -72,7 +78,8 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Let the user decide what to log
+     * Let the user decide what to log.
+     *
      * @return array
      */
     protected function defineSettings()
@@ -87,18 +94,19 @@ class AuditLogPlugin extends BasePlugin
     }
 
     /**
-     * Render the settings template
+     * Render the settings template.
+     *
      * @return string
      */
     public function getSettingsHtml()
     {
         return craft()->templates->render('auditlog/_settings', array(
-            'settings' => $this->getSettings()
+            'settings' => $this->getSettings(),
         ));
     }
 
     /**
-     * Log all specific element types that have the right events
+     * Log all specific element types that have the right events.
      */
     public function init()
     {

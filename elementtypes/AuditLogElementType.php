@@ -1,22 +1,23 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Element Type
+ * Audit Log Element Type.
  *
  * Makes the log behave as an Element Type
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, author
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.auditlog
  */
 class AuditLogElementType extends BaseElementType
 {
-
     /**
-     * The name of the Element Type
+     * The name of the Element Type.
+     *
      * @return string
      */
     public function getName()
@@ -25,8 +26,9 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Return true so we have a status select menu
-     * @return boolean
+     * Return true so we have a status select menu.
+     *
+     * @return bool
      */
     public function hasStatuses()
     {
@@ -34,7 +36,8 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Define statuses
+     * Define statuses.
+     *
      * @return array
      */
     public function getStatuses()
@@ -47,8 +50,10 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Define table column names
-     * @param  string $source
+     * Define table column names.
+     *
+     * @param string $source
+     *
      * @return array
      */
     public function defineTableAttributes($source = null)
@@ -73,9 +78,11 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Return table attribute html
-     * @param  BaseElementModel $element
-     * @param  string           $attribute
+     * Return table attribute html.
+     *
+     * @param BaseElementModel $element
+     * @param string           $attribute
+     *
      * @return string
      */
     public function getTableAttributeHtml(BaseElementModel $element, $attribute)
@@ -131,7 +138,8 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Define criteria
+     * Define criteria.
+     *
      * @return array
      */
     public function defineCriteriaAttributes()
@@ -148,10 +156,12 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Cancel the elements query
-     * @param  DbCommand            $query
-     * @param  ElementCriteriaModel $criteria
-     * @return boolean
+     * Cancel the elements query.
+     *
+     * @param DbCommand            $query
+     * @param ElementCriteriaModel $criteria
+     *
+     * @return bool
      */
     public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
     {
@@ -159,8 +169,10 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Create element from row
-     * @param  array $row
+     * Create element from row.
+     *
+     * @param array $row
+     *
      * @return AuditLogModel
      */
     public function populateElementModel($row)
@@ -169,8 +181,9 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Define the sources
-     * @param  string $context
+     * Define the sources.
+     *
+     * @param string $context
      */
     public function getSources($context = null)
     {
@@ -218,14 +231,16 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Return the html
-     * @param  array $criteria
-     * @param  array $disabledElementIds
-     * @param  array $viewState
-     * @param  string $sourceKey
-     * @param  string $context
-     * @param  boolean $includeContainer
-     * @param  boolean $showCheckboxes
+     * Return the html.
+     *
+     * @param array  $criteria
+     * @param array  $disabledElementIds
+     * @param array  $viewState
+     * @param string $sourceKey
+     * @param string $context
+     * @param bool   $includeContainer
+     * @param bool   $showCheckboxes
+     *
      * @return string
      */
     public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
@@ -281,7 +296,8 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Set sortable attributes
+     * Set sortable attributes.
+     *
      * @return array
      */
     public function defineSortableAttributes()

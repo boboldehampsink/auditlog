@@ -1,23 +1,25 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log service
+ * Audit Log service.
  *
  * Contains logics for logging
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, author
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.auditlog
  */
 class AuditLogService extends BaseApplicationComponent
 {
-
     /**
-     * Show log with criteria
-     * @param  object $criteria
+     * Show log with criteria.
+     *
+     * @param object $criteria
+     *
      * @return array
      */
     public function log($criteria)
@@ -65,8 +67,10 @@ class AuditLogService extends BaseApplicationComponent
     }
 
     /**
-     * View a specific log item
-     * @param  int $id
+     * View a specific log item.
+     *
+     * @param int $id
+     *
      * @return AuditLogModel
      */
     public function view($id)
@@ -98,9 +102,11 @@ class AuditLogService extends BaseApplicationComponent
     }
 
     /**
-     * Parse field values
-     * @param  string $handle
-     * @param  mixed $data
+     * Parse field values.
+     *
+     * @param string $handle
+     * @param mixed  $data
+     *
      * @return string
      */
     public function parseFieldData($handle, $data)
@@ -133,12 +139,12 @@ class AuditLogService extends BaseApplicationComponent
                         // Make data human readable
                         switch ($data) {
 
-                            case "0":
-                                $data = Craft::t("No");
+                            case '0':
+                                $data = Craft::t('No');
                                 break;
 
-                            case "1":
-                                $data = Craft::t("Yes");
+                            case '1':
+                                $data = Craft::t('Yes');
                                 break;
 
                         }
@@ -150,7 +156,7 @@ class AuditLogService extends BaseApplicationComponent
         } else {
 
             // Don't return null, return empty
-            $data = "";
+            $data = '';
         }
 
         // If it's an array, make it a string
@@ -167,11 +173,12 @@ class AuditLogService extends BaseApplicationComponent
     }
 
     /**
-     * Check if an element has changed while saving
-     * @param  string $elementType
-     * @param  int $id
-     * @param  array $before
-     * @param  array $after
+     * Check if an element has changed while saving.
+     *
+     * @param string $elementType
+     * @param int    $id
+     * @param array  $before
+     * @param array  $after
      */
     public function elementHasChanged($elementType, $id, $before, $after)
     {
@@ -207,8 +214,9 @@ class AuditLogService extends BaseApplicationComponent
     }
 
     /**
-     * Fires an "onElementChanged" event
-     * @param  Event  $event
+     * Fires an "onElementChanged" event.
+     *
+     * @param Event $event
      */
     public function onElementChanged(Event $event)
     {
@@ -216,8 +224,9 @@ class AuditLogService extends BaseApplicationComponent
     }
 
     /**
-     * Fires an "onFieldChanged" event
-     * @param  Event $event
+     * Fires an "onFieldChanged" event.
+     *
+     * @param Event $event
      */
     public function onFieldChanged(Event $event)
     {

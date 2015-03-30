@@ -1,29 +1,29 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Model
+ * Audit Log Model.
  *
  * Contains the log data aswell as some constants
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, author
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.auditlog
  */
 class AuditLogModel extends BaseElementModel
 {
-
     /**
-     * Statuses
+     * Statuses.
      */
     const CREATED   = 'live';
     const MODIFIED  = 'pending';
     const DELETED   = 'expired';
 
     /**
-     * Fieldtypes
+     * Fieldtypes.
      */
     const FieldTypeEntries     = 'Entries';
     const FieldTypeCategories  = 'Categories';
@@ -32,13 +32,15 @@ class AuditLogModel extends BaseElementModel
     const FieldTypeLightswitch = 'Lightswitch';
 
     /**
-     * Element Type name
+     * Element Type name.
+     *
      * @var string
      */
     protected $elementType = 'AuditLog';
 
     /**
-     * Return the title of this model
+     * Return the title of this model.
+     *
      * @return string
      */
     public function getTitle()
@@ -47,7 +49,8 @@ class AuditLogModel extends BaseElementModel
     }
 
     /**
-     * Return the model's attributes
+     * Return the model's attributes.
+     *
      * @return array
      */
     protected function defineAttributes()
@@ -65,7 +68,8 @@ class AuditLogModel extends BaseElementModel
     }
 
     /**
-     * Return the model's status
+     * Return the model's status.
+     *
      * @return string
      */
     public function getStatus()
@@ -74,7 +78,8 @@ class AuditLogModel extends BaseElementModel
     }
 
     /**
-     * Return the model's user
+     * Return the model's user.
+     *
      * @return UserModel
      */
     public function getUser()

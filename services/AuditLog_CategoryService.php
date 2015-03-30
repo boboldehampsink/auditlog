@@ -1,34 +1,36 @@
 <?php
+
 namespace Craft;
 
 /**
- * Audit Log Category service
+ * Audit Log Category service.
  *
  * Contains logics for logging categories
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, author
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.auditlog
  */
 class AuditLog_CategoryService extends BaseApplicationComponent
 {
-
     /**
-     * Catch value before saving
+     * Catch value before saving.
+     *
      * @var array
      */
     public $before = array();
 
     /**
-     * Catch value after saving
+     * Catch value after saving.
+     *
      * @var array
      */
     public $after  = array();
 
     /**
-     * Initialize the category saving/deleting events
+     * Initialize the category saving/deleting events.
      */
     public function log()
     {
@@ -136,9 +138,11 @@ class AuditLog_CategoryService extends BaseApplicationComponent
     }
 
     /**
-     * Parse category fields
-     * @param  CategoryModel $category
-     * @param  boolean       $empty
+     * Parse category fields.
+     *
+     * @param CategoryModel $category
+     * @param bool          $empty
+     *
      * @return array
      */
     public function fields(CategoryModel $category, $empty = false)
