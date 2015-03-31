@@ -22,6 +22,10 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.6.0###
+ - Added the ability to control logging per element type
+ - Performance fixes - works much smoother now by fully utilizing ElementType API
+
 ###0.5.0###
  - Added "onElementChanged" event so you can check if a saved element really changed
    - This event will also generate a diff between the before and after state of an element
