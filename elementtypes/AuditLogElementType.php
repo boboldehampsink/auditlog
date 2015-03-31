@@ -104,35 +104,35 @@ class AuditLogElementType extends BaseElementType
             // Format dates
             case 'dateCreated':
             case 'dateUpdated':
-            {
+
                 return craft()->dateFormatter->formatDateTime($element->$attribute);
-            }
+                break;
 
             // Return clickable user link
             case 'user':
-            {
+
                 $user = $element->getUser();
 
                 return $user ? '<a href="'.$user->getCpEditUrl().'">'.$user.'</a>' : Craft::t('Guest');
-            }
+                break;
 
             // Return clickable event origin
             case 'origin':
-            {
+
                 return '<a href="'.preg_replace('/'.craft()->config->get('cpTrigger').'\//', '', UrlHelper::getUrl($element->origin), 1).'">'.$element->origin.'</a>';
-            }
+                break;
 
             // Return view changes button
             case 'changes':
-            {
+
                 return '<a class="btn" href="'.UrlHelper::getCpUrl('auditlog/'.$element->id).'">'.Craft::t('View').'</a>';
-            }
+                break;
 
             // Default behavior
             default:
-            {
+
                 return $element->$attribute;
-            }
+                break;
 
         }
     }
@@ -152,6 +152,7 @@ class AuditLogElementType extends BaseElementType
             'status'      => AttributeType::String,
             'before'      => AttributeType::DateTime,
             'after'       => AttributeType::DateTime,
+            'order'       => array(AttributeType::String, 'default' => 'auditlog.id desc'),
         );
     }
 
@@ -165,7 +166,57 @@ class AuditLogElementType extends BaseElementType
      */
     public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
     {
-        return false;
+        // Default query
+        $query
+            ->select('auditlog.id, auditlog.type, auditlog.userId, auditlog.origin, auditlog.before, auditlog.after, auditlog.status, auditlog.dateCreated, auditlog.dateUpdated')
+            ->from('auditlog auditlog');
+
+        // Reset default element type query parts
+        $query->setJoin('');
+        $query->setWhere('1=1');
+        $query->setGroup('');
+        array_shift($query->params);
+
+        // Check for date after
+        if (!empty($criteria->after)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '>= '.DateTimeHelper::formatTimeForDb($criteria->after), $query->params));
+        }
+
+        // Check for date before
+        if (!empty($criteria->before)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->before), $query->params));
+        }
+
+        // Check for type
+        if (!empty($criteria->type)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.type', $criteria->type, $query->params));
+        }
+
+        // Check for status
+        if (!empty($criteria->status)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.status', $criteria->status, $query->params));
+        }
+
+        // Search
+        if (!empty($criteria->search)) {
+
+            // Always perform a LIKE search
+            $criteria->search = '*'.$criteria->search.'*';
+
+            // Build conditions
+            $conditions = array(
+                'or',
+                DbHelper::parseParam('auditlog.origin', $criteria->search, $query->params),
+                DbHelper::parseParam('auditlog.before', $criteria->search, $query->params),
+                DbHelper::parseParam('auditlog.after', $criteria->search, $query->params),
+            );
+
+            // Add to query
+            $query->andWhere($conditions, $query->params);
+
+            // Don't perform search logics after this
+            $criteria->search = null;
+        }
     }
 
     /**
@@ -228,71 +279,9 @@ class AuditLogElementType extends BaseElementType
                 ),
             );
         }
-    }
 
-    /**
-     * Return the html.
-     *
-     * @param array  $criteria
-     * @param array  $disabledElementIds
-     * @param array  $viewState
-     * @param string $sourceKey
-     * @param string $context
-     * @param bool   $includeContainer
-     * @param bool   $showCheckboxes
-     *
-     * @return string
-     */
-    public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
-    {
-        $variables = array(
-            'viewMode'            => $viewState['mode'],
-            'context'             => $context,
-            'elementType'         => new ElementTypeVariable($this),
-            'disabledElementIds'  => $disabledElementIds,
-            'showCheckboxes'      => $showCheckboxes,
-        );
-
-        // In case of "score" (searching)
-        if (!empty($viewState['order']) && $viewState['order'] == 'score') {
-
-            // Order by id
-            $criteria->order = 'id';
-        } else {
-
-            // Get sortable attributes
-            $sortableAttributes = $this->defineSortableAttributes();
-
-            if ($sortableAttributes) {
-
-                // Get order and sort
-                $order = (!empty($viewState['order']) && isset($sortableAttributes[$viewState['order']])) ? $viewState['order'] : array_shift(array_keys($sortableAttributes));
-                $sort  = (!empty($viewState['sort']) && in_array($viewState['sort'], array('asc', 'desc'))) ? $viewState['sort'] : 'asc';
-
-                // Set sort on criteria
-                $criteria->order = $order.' '.$sort;
-            }
-        }
-
-        switch ($viewState['mode']) {
-
-            case 'table':
-
-                // Get the table columns
-                $variables['attributes'] = $this->defineTableAttributes($sourceKey);
-
-                break;
-
-        }
-
-        // Get elements
-        $variables['elements'] = craft()->auditLog->log($criteria);
-
-        // Get template
-        $template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
-
-        // Return template
-        return craft()->templates->render($template, $variables);
+        // Return sources
+        return $sources;
     }
 
     /**

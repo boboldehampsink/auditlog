@@ -25,45 +25,10 @@ class AuditLogService extends BaseApplicationComponent
     public function log($criteria)
     {
         // Build specific criteria
-        $condition = '';
-        $params = array();
+        $criteria = craft()->elements->getCriteria('AuditLog', $criteria);
 
-        // Check for date after
-        if (!empty($criteria->after)) {
-            $condition .= 'DATE(dateUpdated) >= :after and ';
-            $params[':after'] = DateTimeHelper::formatTimeForDb($criteria->after);
-        }
-
-        // Check for date before
-        if (!empty($criteria->before)) {
-            $condition .= 'DATE(dateUpdated) <= :before and ';
-            $params[':before'] = DateTimeHelper::formatTimeForDb($criteria->before);
-        }
-
-        // Check for type
-        if (!empty($criteria->type)) {
-            $condition .= 'type = :type and ';
-            $params[':type'] = $criteria->type;
-        }
-
-        // Check for status
-        if (!empty($criteria->status)) {
-            $condition .= 'status = :status and ';
-            $params[':status'] = $criteria->status;
-        }
-
-        // Search
-        if (!empty($criteria->search)) {
-            $condition .= '(`origin` like :search or `before` like :search or `after` like :search) and ';
-            $params[':search'] = '%'.addcslashes($criteria->search, '%_').'%';
-        }
-
-        // Get logs from record
-        return AuditLogModel::populateModels(AuditLogRecord::model()->findAll(array(
-            'order'     => $criteria->order,
-            'condition' => substr($condition, 0, -5),
-            'params'    => $params,
-        )));
+        // Return occurences
+        return $criteria->find();
     }
 
     /**
@@ -77,7 +42,7 @@ class AuditLogService extends BaseApplicationComponent
     {
 
         // Get log from record
-        $log = AuditLogModel::populateModel(AuditLogRecord::model()->findByPk($id));
+        $log = craft()->elements->getCriteria('AuditLog', array('id' => $id))->first();
 
         // Create diff
         $diff = array();

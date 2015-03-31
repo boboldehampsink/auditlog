@@ -34,7 +34,7 @@ class AuditLogController extends BaseController
         ));
 
         // Set sort on criteria
-        $criteria->order = $viewState['order'].' '.$viewState['sort'];
+        $criteria->order = $viewState['order'] == 'score' ? 'id' : $viewState['order'].' '.$viewState['sort'];
 
         // Did we search?
         $criteria->search = craft()->request->getParam('search');
