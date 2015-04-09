@@ -288,11 +288,6 @@ class AuditLogElementType extends BaseElementType
 
                 // Add as own source
                 $sources = array_merge($sources, $plugin);
-
-                // Add to "All elemenents"
-                foreach ($plugin as $key => $values) {
-                    $sources['*']['criteria']['source'][] = $values['criteria']['source'];
-                }
             }
         }
 
