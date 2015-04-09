@@ -280,6 +280,22 @@ class AuditLogElementType extends BaseElementType
             );
         }
 
+        // Get sources by hook
+        $plugins = craft()->plugins->call('registerAuditLogSources');
+        if (count($plugins)) {
+            $sources[] = array('heading' => Craft::t('Custom'));
+            foreach ($plugins as $plugin) {
+
+                // Add as own source
+                $sources = array_merge($sources, $plugin);
+
+                // Add to "All elemenents"
+                foreach ($plugin as $key => $values) {
+                    $sources['*']['criteria']['source'][] = $values['criteria']['source'];
+                }
+            }
+        }
+
         // Return sources
         return $sources;
     }
