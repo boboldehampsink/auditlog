@@ -10,9 +10,12 @@ Features:
  - Export an Audit Log CSV
  - Search, filter and use date ranges to find log entries
  - Has hooks that you can use to extend this plugin
+   - registerAuditLogSources
    - getAuditLogTableAttributeHtml
    - modifyAuditLogTableAttributes
    - modifyAuditLogSortableAttributes
+ - Has events that you can listen to
+   - auditLog.onElementChanged
  
 Roadmap:
  - Log more ElementTypes (Tags, Globals, Assets)
@@ -22,6 +25,10 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.6.1###
+ - Added a registerAuditLogSources hook to prove custom sources/criteria
+ - Added a MIT license
+
 ###0.6.0###
  - Added the ability to control logging per element type
  - Performance fixes - works much smoother now by fully utilizing ElementType API
