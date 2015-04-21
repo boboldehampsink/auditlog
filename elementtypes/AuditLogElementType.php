@@ -175,7 +175,13 @@ class AuditLogElementType extends BaseElementType
         $query->setJoin('');
         $query->setWhere('1=1');
         $query->setGroup('');
-        array_shift($query->params);
+        unset($query->params[':locale']);
+        unset($query->params[':elementsid1']);
+
+        // Check for specific id
+        if (!empty($criteria->id)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.id', $criteria->id, $query->params));
+        }
 
         // Check for date after
         if (!empty($criteria->after)) {
