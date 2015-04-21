@@ -26,7 +26,8 @@ The plugin's folder should be named "auditlog"
 Changelog
 =================
 ###0.6.1###
- - Added a registerAuditLogSources hook to prove custom sources/criteria
+ - Added a registerAuditLogSources hook to provide custom sources/criteria
+ - Fixed Audit Log not being able to fetch a specific log item
  - Added a MIT license
 
 ###0.6.0###
