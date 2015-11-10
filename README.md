@@ -27,6 +27,7 @@ Changelog
 =================
 ###0.6.2###
  - Fixed a bug where the date range didn't fully work
+ - Fixed criteria attributes not fully working
 
 ###0.6.1###
  - Added a registerAuditLogSources hook to provide custom sources/criteria

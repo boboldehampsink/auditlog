@@ -139,6 +139,8 @@ class AuditLogElementType extends BaseElementType
             'userId'      => AttributeType::Number,
             'origin'      => AttributeType::String,
             'modified'    => AttributeType::DateTime,
+            'before'      => AttributeType::String,
+            'after'       => AttributeType::String,
             'status'      => AttributeType::String,
             'from'        => AttributeType::DateTime,
             'to'          => AttributeType::DateTime,
@@ -171,6 +173,36 @@ class AuditLogElementType extends BaseElementType
         // Check for specific id
         if (!empty($criteria->id)) {
             $query->andWhere(DbHelper::parseParam('auditlog.id', $criteria->id, $query->params));
+        }
+
+        // Check type
+        if (!empty($criteria->type)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.type', $criteria->type, $query->params));
+        }
+
+        // Check user id
+        if (!empty($criteria->userId)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.userId', $criteria->userId, $query->params));
+        }
+
+        // Check origin
+        if (!empty($criteria->origin)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.origin', $criteria->origin, $query->params));
+        }
+
+        // Check for date modified
+        if (!empty($criteria->modified)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', $criteria->modified, $query->params));
+        }
+
+        // Check before
+        if (!empty($criteria->before)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.before', $criteria->before, $query->params));
+        }
+
+        // Check after
+        if (!empty($criteria->after)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.after', $criteria->after, $query->params));
         }
 
         // Check for date from
