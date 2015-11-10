@@ -55,10 +55,10 @@ Craft.elementIndex = Craft.createElementIndex('AuditLog', $('#main'), {
 	showLocaleMenu: 'auto',
 	storageKey:     'elementindex.AuditLog',
 	criteria: {
-	    after: {
+	    from: {
 	        date: $('#auditlog-modified-from-date').val()
 	    },
-	    before: {
+	    to: {
 	        date: $('#auditlog-modified-to-date').val()
 	    }
 	}
@@ -89,10 +89,10 @@ $(document).on('change', 'input.hasDatepicker', function() {
 
     // Get new criteria values
     Craft.elementIndex.settings.criteria = {
-        after: {
+        from: {
             date: $('#auditlog-modified-from-date').val()
         },
-        before: {
+        to: {
             date: $('#auditlog-modified-to-date').val()
         }
     };

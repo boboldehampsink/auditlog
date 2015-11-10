@@ -7,9 +7,9 @@ namespace Craft;
  *
  * Makes the log behave as an Element Type
  *
- * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
- * @copyright Copyright (c) 2015, author
- * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @author    Bob Olde Hampsink <b.oldehampsink@nerds.company>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   MIT
  *
  * @link      http://github.com/boboldehampsink
  */
@@ -58,7 +58,6 @@ class AuditLogElementType extends BaseElementType
      */
     public function defineTableAttributes($source = null)
     {
-
         // Define default attributes
         $attributes = array(
             'type'        => Craft::t('Type'),
@@ -87,14 +86,11 @@ class AuditLogElementType extends BaseElementType
      */
     public function getTableAttributeHtml(BaseElementModel $element, $attribute)
     {
-
         // First give plugins a chance to set this
         $pluginAttributeHtml = craft()->plugins->callFirst('getAuditLogTableAttributeHtml', array($element, $attribute), true);
 
         // Check if that had a valid result
         if ($pluginAttributeHtml) {
-
-            // Return it
             return $pluginAttributeHtml;
         }
 
@@ -104,13 +100,11 @@ class AuditLogElementType extends BaseElementType
             // Format dates
             case 'dateCreated':
             case 'dateUpdated':
-
                 return craft()->dateFormatter->formatDateTime($element->$attribute);
                 break;
 
             // Return clickable user link
             case 'user':
-
                 $user = $element->getUser();
 
                 return $user ? '<a href="'.$user->getCpEditUrl().'">'.$user.'</a>' : Craft::t('Guest');
@@ -118,22 +112,18 @@ class AuditLogElementType extends BaseElementType
 
             // Return clickable event origin
             case 'origin':
-
                 return '<a href="'.preg_replace('/'.craft()->config->get('cpTrigger').'\//', '', UrlHelper::getUrl($element->origin), 1).'">'.$element->origin.'</a>';
                 break;
 
             // Return view changes button
             case 'changes':
-
                 return '<a class="btn" href="'.UrlHelper::getCpUrl('auditlog/'.$element->id).'">'.Craft::t('View').'</a>';
                 break;
 
             // Default behavior
             default:
-
                 return $element->$attribute;
                 break;
-
         }
     }
 
@@ -150,8 +140,8 @@ class AuditLogElementType extends BaseElementType
             'origin'      => AttributeType::String,
             'modified'    => AttributeType::DateTime,
             'status'      => AttributeType::String,
-            'before'      => AttributeType::DateTime,
-            'after'       => AttributeType::DateTime,
+            'from'        => AttributeType::DateTime,
+            'to'          => AttributeType::DateTime,
             'order'       => array(AttributeType::String, 'default' => 'auditlog.id desc'),
         );
     }
@@ -183,14 +173,14 @@ class AuditLogElementType extends BaseElementType
             $query->andWhere(DbHelper::parseParam('auditlog.id', $criteria->id, $query->params));
         }
 
-        // Check for date after
-        if (!empty($criteria->after)) {
-            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '>= '.DateTimeHelper::formatTimeForDb($criteria->after), $query->params));
+        // Check for date from
+        if (!empty($criteria->from)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '>= '.DateTimeHelper::formatTimeForDb($criteria->from), $query->params));
         }
 
-        // Check for date before
-        if (!empty($criteria->before)) {
-            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->before), $query->params));
+        // Check for date to
+        if (!empty($criteria->to)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->to), $query->params));
         }
 
         // Check for type
@@ -244,7 +234,6 @@ class AuditLogElementType extends BaseElementType
      */
     public function getSources($context = null)
     {
-
         // Get plugin settings
         $settings = craft()->plugins->getPlugin('AuditLog')->getSettings();
 
@@ -308,7 +297,6 @@ class AuditLogElementType extends BaseElementType
      */
     public function defineSortableAttributes()
     {
-
         // Set modified first
         $attributes['dateUpdated'] = Craft::t('Modified');
 

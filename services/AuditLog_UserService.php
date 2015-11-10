@@ -7,9 +7,9 @@ namespace Craft;
  *
  * Contains logics for logging users
  *
- * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
- * @copyright Copyright (c) 2015, author
- * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @author    Bob Olde Hampsink <b.oldehampsink@nerds.company>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   MIT
  *
  * @link      http://github.com/boboldehampsink
  */

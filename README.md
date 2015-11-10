@@ -16,15 +16,18 @@ Features:
    - modifyAuditLogSortableAttributes
  - Has events that you can listen to
    - auditLog.onElementChanged
- 
+
 Roadmap:
  - Log more ElementTypes (Tags, Globals, Assets)
- 
+
 Important:
 The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.6.2###
+ - Fixed a bug where the date range didn't fully work
+
 ###0.6.1###
  - Added a registerAuditLogSources hook to provide custom sources/criteria
  - Fixed Audit Log not being able to fetch a specific log item
