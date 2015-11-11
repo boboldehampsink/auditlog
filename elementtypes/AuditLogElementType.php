@@ -212,6 +212,7 @@ class AuditLogElementType extends BaseElementType
 
         // Check for date to
         if (!empty($criteria->to)) {
+            $criteria->to->add(new DateInterval('PT23H59M59S'));
             $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->to), $query->params));
         }
 
