@@ -78,6 +78,18 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
+     * Returns the default table attributes.
+     *
+     * @param string $source
+     *
+     * @return array
+     */
+    public function getDefaultTableAttributes($source = null)
+    {
+        return array('type', 'user', 'origin', 'dateUpdated', 'changes');
+    }
+
+    /**
      * Return table attribute html.
      *
      * @param BaseElementModel $element
