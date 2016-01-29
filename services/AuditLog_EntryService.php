@@ -168,7 +168,13 @@ class AuditLog_EntryService extends BaseApplicationComponent
         $elementType = craft()->elements->getElementType(ElementType::Entry);
 
         // Get nice attributes
-        $attributes = $elementType->defineTableAttributes();
+        $availableAttributes = $elementType->defineAvailableTableAttributes();
+
+        // Make 'em fit
+        $attributes = array();
+        foreach ($availableAttributes as $key => $result) {
+            $attributes[$key] = $result['label'];
+        }
 
         // Get static "fields"
         foreach ($entry->getAttributes() as $handle => $value) {

@@ -50,27 +50,28 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Define table column names.
-     *
-     * @param string $source
+     * Define available table column names.
      *
      * @return array
      */
-    public function defineTableAttributes($source = null)
+    public function defineAvailableTableAttributes()
     {
         // Define default attributes
         $attributes = array(
-            'type'        => Craft::t('Type'),
-            'user'        => Craft::t('User'),
-            'origin'      => Craft::t('Origin'),
-            'dateUpdated' => Craft::t('Modified'),
+            'type'        => array('label' => Craft::t('Type')),
+            'user'        => array('label' => Craft::t('User')),
+            'origin'      => array('label' => Craft::t('Origin')),
+            'dateUpdated' => array('label' => Craft::t('Modified')),
         );
 
         // Allow plugins to modify the attributes
-        craft()->plugins->call('modifyAuditLogTableAttributes', array(&$attributes, $source));
+        $pluginAttributes = craft()->plugins->call('defineAdditionalAuditLogTableAttributes', array(), true);
+        foreach ($pluginAttributes as $thisPluginAttributes) {
+            $attributes = array_merge($attributes, $thisPluginAttributes);
+        }
 
         // Set changes at last
-        $attributes['changes'] = Craft::t('Changes');
+        $attributes['changes'] = array('label' => Craft::t('Changes'));
 
         // Return the attributes
         return $attributes;
@@ -334,7 +335,7 @@ class AuditLogElementType extends BaseElementType
         $attributes['dateUpdated'] = Craft::t('Modified');
 
         // Get table attributes
-        $attributes = array_merge($attributes, $this->defineTableAttributes());
+        $attributes = array_merge($attributes, parent::defineSortableAttributes());
 
         // Unset unsortable attributes
         unset($attributes['user'], $attributes['changes']);

@@ -12,7 +12,7 @@ Features:
  - Has hooks that you can use to extend this plugin
    - registerAuditLogSources
    - getAuditLogTableAttributeHtml
-   - modifyAuditLogTableAttributes
+   - defineAvailableTableAttributes
    - modifyAuditLogSortableAttributes
  - Has events that you can listen to
    - auditLog.onElementChanged

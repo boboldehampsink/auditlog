@@ -168,7 +168,13 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         $elementType = craft()->elements->getElementType(ElementType::Category);
 
         // Get nice attributes
-        $attributes = $elementType->defineTableAttributes();
+        $availableAttributes = $elementType->defineAvailableTableAttributes();
+
+        // Make 'em fit
+        $attributes = array();
+        foreach ($availableAttributes as $key => $result) {
+            $attributes[$key] = $result['label'];
+        }
 
         // Get static "fields"
         foreach ($category->getAttributes() as $handle => $value) {

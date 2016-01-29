@@ -51,8 +51,13 @@ class AuditLogController extends BaseController
         // Set status attribute
         $attributes['status'] = Craft::t('Status');
 
-        // Get table attributes
-        $attributes += $elementType->defineTableAttributes();
+        // Get nice attributes
+        $availableAttributes = $elementType->defineAvailableTableAttributes();
+
+        // Make 'em fit
+        foreach ($availableAttributes as $key => $result) {
+            $attributes[$key] = $result['label'];
+        }
 
         // Ditch the changes button
         unset($attributes['changes']);
