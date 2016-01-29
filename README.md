@@ -25,6 +25,9 @@ The plugin's folder should be named "auditlog"
 
 Changelog
 =================
+###0.7.0###
+ - Added Craft 2.5 compatibility
+
 ###0.6.2###
  - Fixed a bug where the date range didn't fully work
  - Fixed criteria attributes not fully working
