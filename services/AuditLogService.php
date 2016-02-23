@@ -77,7 +77,6 @@ class AuditLogService extends BaseApplicationComponent
      */
     public function parseFieldData($handle, $data)
     {
-
         // Do we have any data at all
         if (!is_null($data)) {
 
@@ -145,10 +144,11 @@ class AuditLogService extends BaseApplicationComponent
      * @param int    $id
      * @param array  $before
      * @param array  $after
+     *
+     * @return array
      */
     public function elementHasChanged($elementType, $id, $before, $after)
     {
-
         // Flatten arrays
         $flatBefore = ArrayHelper::flattenArray($before);
         $flatAfter = ArrayHelper::flattenArray($after);
@@ -177,6 +177,8 @@ class AuditLogService extends BaseApplicationComponent
             ));
             $this->onElementChanged($event);
         }
+
+        return $diff;
     }
 
     /**
@@ -193,6 +195,8 @@ class AuditLogService extends BaseApplicationComponent
      * Fires an "onFieldChanged" event.
      *
      * @param Event $event
+     *
+     * @codeCoverageIgnore
      */
     public function onFieldChanged(Event $event)
     {
