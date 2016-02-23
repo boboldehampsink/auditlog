@@ -43,9 +43,9 @@ class AuditLogElementType extends BaseElementType
     public function getStatuses()
     {
         return array(
-            AuditLogModel::CREATED  => Craft::t('Created'),
+            AuditLogModel::CREATED => Craft::t('Created'),
             AuditLogModel::MODIFIED => Craft::t('Modified'),
-            AuditLogModel::DELETED  => Craft::t('Deleted'),
+            AuditLogModel::DELETED => Craft::t('Deleted'),
         );
     }
 
@@ -58,9 +58,9 @@ class AuditLogElementType extends BaseElementType
     {
         // Define default attributes
         $attributes = array(
-            'type'        => array('label' => Craft::t('Type')),
-            'user'        => array('label' => Craft::t('User')),
-            'origin'      => array('label' => Craft::t('Origin')),
+            'type' => array('label' => Craft::t('Type')),
+            'user' => array('label' => Craft::t('User')),
+            'origin' => array('label' => Craft::t('Origin')),
             'dateUpdated' => array('label' => Craft::t('Modified')),
         );
 
@@ -114,29 +114,24 @@ class AuditLogElementType extends BaseElementType
             case 'dateCreated':
             case 'dateUpdated':
                 return craft()->dateFormatter->formatDateTime($element->$attribute);
-                break;
 
             // Return clickable user link
             case 'user':
                 $user = $element->getUser();
 
                 return $user ? '<a href="'.$user->getCpEditUrl().'">'.$user.'</a>' : Craft::t('Guest');
-                break;
 
             // Return clickable event origin
             case 'origin':
                 return '<a href="'.preg_replace('/'.craft()->config->get('cpTrigger').'\//', '', UrlHelper::getUrl($element->origin), 1).'">'.$element->origin.'</a>';
-                break;
 
             // Return view changes button
             case 'changes':
                 return '<a class="btn" href="'.UrlHelper::getCpUrl('auditlog/'.$element->id).'">'.Craft::t('View').'</a>';
-                break;
 
             // Default behavior
             default:
                 return $element->$attribute;
-                break;
         }
     }
 
@@ -148,16 +143,16 @@ class AuditLogElementType extends BaseElementType
     public function defineCriteriaAttributes()
     {
         return array(
-            'type'        => AttributeType::String,
-            'userId'      => AttributeType::Number,
-            'origin'      => AttributeType::String,
-            'modified'    => AttributeType::DateTime,
-            'before'      => AttributeType::String,
-            'after'       => AttributeType::String,
-            'status'      => AttributeType::String,
-            'from'        => AttributeType::DateTime,
-            'to'          => AttributeType::DateTime,
-            'order'       => array(AttributeType::String, 'default' => 'auditlog.id desc'),
+            'type' => AttributeType::String,
+            'userId' => AttributeType::Number,
+            'origin' => AttributeType::String,
+            'modified' => AttributeType::DateTime,
+            'before' => AttributeType::String,
+            'after' => AttributeType::String,
+            'status' => AttributeType::String,
+            'from' => AttributeType::DateTime,
+            'to' => AttributeType::DateTime,
+            'order' => array(AttributeType::String, 'default' => 'auditlog.id desc'),
         );
     }
 
@@ -286,7 +281,7 @@ class AuditLogElementType extends BaseElementType
         // Set default sources
         $sources = array(
             '*' => array(
-                'label'      => Craft::t('All logs'),
+                'label' => Craft::t('All logs'),
             ),
             array('heading' => Craft::t('Elements')),
         );
@@ -294,9 +289,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for entries when enabled
         if (in_array(ElementType::Entry, $settings->enabled)) {
             $sources['entries'] = array(
-                'label'      => Craft::t('Entries'),
-                'criteria'   => array(
-                    'type'   => ElementType::Entry,
+                'label' => Craft::t('Entries'),
+                'criteria' => array(
+                    'type' => ElementType::Entry,
                 ),
             );
         }
@@ -304,9 +299,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for categories when enabled
         if (in_array(ElementType::Category, $settings->enabled)) {
             $sources['categories'] = array(
-                'label'      => Craft::t('Categories'),
-                'criteria'   => array(
-                    'type'   => ElementType::Category,
+                'label' => Craft::t('Categories'),
+                'criteria' => array(
+                    'type' => ElementType::Category,
                 ),
             );
         }
@@ -314,9 +309,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for users when enabled
         if (in_array(ElementType::User, $settings->enabled)) {
             $sources['users'] = array(
-                'label'      => Craft::t('Users'),
-                'criteria'   => array(
-                    'type'   => ElementType::User,
+                'label' => Craft::t('Users'),
+                'criteria' => array(
+                    'type' => ElementType::User,
                 ),
             );
         }
@@ -344,7 +339,7 @@ class AuditLogElementType extends BaseElementType
     public function defineSortableAttributes()
     {
         // Set modified first
-        $attributes['dateUpdated'] = Craft::t('Modified');
+        $attributes = array('dateUpdated' => Craft::t('Modified'));
 
         // Get table attributes
         $attributes = array_merge($attributes, parent::defineSortableAttributes());

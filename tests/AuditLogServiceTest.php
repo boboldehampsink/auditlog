@@ -12,6 +12,9 @@ namespace Craft;
  * @license   MIT
  *
  * @link      http://github.com/boboldehampsink
+ *
+ * @coversDefaultClass Craft\AuditLogService
+ * @covers ::<!public>
  */
 class AuditLogServiceTest extends BaseTest
 {

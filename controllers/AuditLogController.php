@@ -49,7 +49,7 @@ class AuditLogController extends BaseController
         $log = craft()->auditLog->log($criteria);
 
         // Set status attribute
-        $attributes['status'] = Craft::t('Status');
+        $attributes = array('status' => Craft::t('Status'));
 
         // Get nice attributes
         $availableAttributes = $elementType->defineAvailableTableAttributes();
