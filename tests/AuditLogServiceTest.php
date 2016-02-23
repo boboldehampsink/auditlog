@@ -43,7 +43,7 @@ class AuditLogServiceTest extends BaseTest
         $service = new AuditLogService();
         $result = $service->view(1);
 
-        $this->assertCount(1, $result);
+        $this->assertInstanceOf('Craft\AuditLogModel', $result);
     }
 
     /**
@@ -93,7 +93,7 @@ class AuditLogServiceTest extends BaseTest
     {
         $mock = $this->getMockBuilder('Craft\AuditLogModel')
             ->disableOriginalConstructor()
-            ->setMethods(array('__get'))
+            ->setMethods(array('__get', 'setAttribute'))
             ->getMock();
 
         $mock->expects($this->any())->method('__get')->willReturn($this->returnCallback(function ($attribute) {
@@ -106,6 +106,7 @@ class AuditLogServiceTest extends BaseTest
                     return 'test';
             }
         }));
+        $mock->expects($this->any())->method('setAttribute')->willReturn(true);
 
         return $mock;
     }
