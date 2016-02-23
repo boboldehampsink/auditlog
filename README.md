@@ -1,4 +1,4 @@
-Audit Log plugin for Craft CMS
+Audit Log plugin for Craft CMS [![Build Status](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/build-status/develop) [![Code Coverage](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/?branch=develop) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/boboldehampsink/auditlog/?branch=develop)
 =================
 
 Plugin that allows you to log adding/updating/deleting of categories/entries/users.
@@ -22,6 +22,13 @@ Roadmap:
 
 Important:
 The plugin's folder should be named "auditlog"
+
+Development
+=================
+Run this from your Craft installation to test your changes to this plugin before submitting a Pull Request
+```bash
+phpunit --bootstrap craft/app/tests/bootstrap.php --configuration craft/plugins/auditlog/phpunit.xml.dist --coverage-text craft/plugins/auditlog/tests
+```
 
 Changelog
 =================

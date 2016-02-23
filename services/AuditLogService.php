@@ -21,6 +21,8 @@ class AuditLogService extends BaseApplicationComponent
      * @param object $criteria
      *
      * @return array
+     *
+     * @codeCoverageIgnore
      */
     public function log($criteria)
     {
@@ -40,7 +42,6 @@ class AuditLogService extends BaseApplicationComponent
      */
     public function view($id)
     {
-
         // Get log from record
         $log = craft()->elements->getCriteria('AuditLog', array('id' => $id))->first();
 
@@ -52,10 +53,10 @@ class AuditLogService extends BaseApplicationComponent
 
             // Set parsed values
             $diff[$handle] = array(
-                'label'   => $item['label'],
+                'label' => $item['label'],
                 'changed' => ($item['value'] != $log['before'][$handle]['value']),
-                'after'   => $item['value'],
-                'before'  => $log['before'][$handle]['value'],
+                'after' => $item['value'],
+                'before' => $log['before'][$handle]['value'],
             );
         }
 
@@ -150,7 +151,7 @@ class AuditLogService extends BaseApplicationComponent
 
         // Flatten arrays
         $flatBefore = ArrayHelper::flattenArray($before);
-        $flatAfter  = ArrayHelper::flattenArray($after);
+        $flatAfter = ArrayHelper::flattenArray($after);
 
         // Calculate the diffence
         $flatDiff = array_diff_assoc($flatAfter, $flatBefore);
@@ -171,8 +172,8 @@ class AuditLogService extends BaseApplicationComponent
             // Fire an "onElementChanged" event
             $event = new Event($this, array(
                 'elementType' => $elementType,
-                'id'          => $id,
-                'diff'        => $diff,
+                'id' => $id,
+                'diff' => $diff,
             ));
             $this->onElementChanged($event);
         }
