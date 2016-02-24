@@ -82,7 +82,7 @@ class AuditLogElementType extends BaseElementType
      *
      * @param string $source
      *
-     * @return array
+     * @return string[]
      */
     public function getDefaultTableAttributes($source = null)
     {
@@ -157,12 +157,10 @@ class AuditLogElementType extends BaseElementType
     }
 
     /**
-     * Cancel the elements query.
+     * Modify the elements query.
      *
      * @param DbCommand            $query
      * @param ElementCriteriaModel $criteria
-     *
-     * @return bool
      */
     public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
     {
@@ -223,7 +221,7 @@ class AuditLogElementType extends BaseElementType
     /**
      * Apply date criteria.
      *
-     * @param ElementCriteriaModel $search
+     * @param ElementCriteriaModel $criteria
      * @param DbCommand            $query
      */
     private function applyDateCriteria(ElementCriteriaModel $criteria, DbCommand $query)
@@ -248,7 +246,7 @@ class AuditLogElementType extends BaseElementType
     /**
      * Apply search criteria.
      *
-     * @param ElementCriteriaModel $search
+     * @param ElementCriteriaModel $criteria
      * @param DbCommand            $query
      */
     private function applySearchCriteria(ElementCriteriaModel $criteria, DbCommand $query)
