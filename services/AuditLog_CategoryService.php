@@ -27,114 +27,133 @@ class AuditLog_CategoryService extends BaseApplicationComponent
      *
      * @var array
      */
-    public $after  = array();
+    public $after = array();
 
     /**
      * Initialize the category saving/deleting events.
+     *
+     * @codeCoverageIgnore
      */
     public function log()
     {
-
         // Get values before saving
-        craft()->on('categories.onBeforeSaveCategory', function (Event $event) {
-
-            // Get category id to save
-            $id = $event->params['category']->id;
-
-            if (!$event->params['isNewCategory']) {
-
-                // Get old category from db
-                $category = CategoryModel::populateModel(CategoryRecord::model()->findById($id));
-
-                // Get fields
-                craft()->auditLog_category->before = craft()->auditLog_category->fields($category);
-            } else {
-
-                // Get fields
-                craft()->auditLog_category->before = craft()->auditLog_category->fields($event->params['category'], true);
-            }
-
-        });
+        craft()->on('categories.onBeforeSaveCategory', array($this, 'onBeforeSaveCategory'));
 
         // Get values after saving
-        craft()->on('categories.onSaveCategory', function (Event $event) {
-
-            // Get saved category
-            $category = $event->params['category'];
-
-            // Get fields
-            craft()->auditLog_category->after = craft()->auditLog_category->fields($category);
-
-            // New row
-            $log = new AuditLogRecord();
-
-            // Get user
-            $user = craft()->userSession->getUser();
-
-            // Set user id
-            $log->userId = $user ? $user->id : null;
-
-            // Set element type
-            $log->type = ElementType::Category;
-
-            // Set origin
-            $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
-
-            // Set before
-            $log->before = craft()->auditLog_category->before;
-
-            // Set after
-            $log->after = craft()->auditLog_category->after;
-
-            // Set status
-            $log->status = ($event->params['isNewCategory'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
-
-            // Save row
-            $log->save(false);
-
-            // Callback
-            craft()->auditLog->elementHasChanged(ElementType::Category, $category->id, craft()->auditLog_category->before, craft()->auditLog_category->after);
-
-        });
+        craft()->on('categories.onSaveCategory', array($this, 'onSaveCategory'));
 
         // Get values before deleting
-        craft()->on('categories.onBeforeDeleteCategory', function (Event $event) {
+        craft()->on('categories.onBeforeDeleteCategory', array($this, 'onBeforeDeleteCategory'));
+    }
 
-            // Get deleted category
-            $category = $event->params['category'];
+    /**
+     * Handle the onBeforeSaveCategory event.
+     *
+     * @param Event $event
+     */
+    public function onBeforeSaveCategory(Event $event)
+    {
+        // Get category id to save
+        $id = $event->params['category']->id;
+
+        if (!$event->params['isNewCategory']) {
+
+            // Get old category from db
+            $category = CategoryModel::populateModel(CategoryRecord::model()->findById($id));
 
             // Get fields
-            craft()->auditLog_category->before = craft()->auditLog_category->fields($category);
-            craft()->auditLog_category->after  = craft()->auditLog_category->fields($category, true);
+            $this->before = $this->fields($category);
+        } else {
 
-            // New row
-            $log = new AuditLogRecord();
+            // Get fields
+            $this->before = $this->fields($event->params['category'], true);
+        }
+    }
 
-            // Set user id
-            $log->userId = craft()->userSession->getUser()->id;
+    /**
+     * Handle the onSaveCategory event.
+     *
+     * @param Event $event
+     */
+    public function onSaveCategory(Event $event)
+    {
+        // Get saved category
+        $category = $event->params['category'];
 
-            // Set element type
-            $log->type = ElementType::Category;
+        // Get fields
+        $this->after = $this->fields($category);
 
-            // Set origin
-            $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
+        // New row
+        $log = new AuditLogRecord();
 
-            // Set before
-            $log->before = craft()->auditLog_category->before;
+        // Get user
+        $user = craft()->userSession->getUser();
 
-            // Set after
-            $log->after = craft()->auditLog_category->after;
+        // Set user id
+        $log->userId = $user ? $user->id : null;
 
-            // Set status
-            $log->status = AuditLogModel::DELETED;
+        // Set element type
+        $log->type = ElementType::Category;
 
-            // Save row
-            $log->save(false);
+        // Set origin
+        $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
 
-            // Callback
-            craft()->auditLog->elementHasChanged(ElementType::Category, $category->id, craft()->auditLog_category->before, craft()->auditLog_category->after);
+        // Set before
+        $log->before = $this->before;
 
-        });
+        // Set after
+        $log->after = $this->after;
+
+        // Set status
+        $log->status = ($event->params['isNewCategory'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
+
+        // Save row
+        $log->save(false);
+
+        // Callback
+        craft()->auditLog->elementHasChanged(ElementType::Category, $category->id, $this->before, $this->after);
+    }
+
+    /**
+     * Handle the onBeforeDeleteCategory event.
+     *
+     * @param Event $event
+     */
+    public function onBeforeDeleteCategory(Event $event)
+    {
+        // Get deleted category
+        $category = $event->params['category'];
+
+        // Get fields
+        $this->before = $this->fields($category);
+        $this->after = $this->fields($category, true);
+
+        // New row
+        $log = new AuditLogRecord();
+
+        // Set user id
+        $log->userId = craft()->userSession->getUser()->id;
+
+        // Set element type
+        $log->type = ElementType::Category;
+
+        // Set origin
+        $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
+
+        // Set before
+        $log->before = $this->before;
+
+        // Set after
+        $log->after = $this->after;
+
+        // Set status
+        $log->status = AuditLogModel::DELETED;
+
+        // Save row
+        $log->save(false);
+
+        // Callback
+        craft()->auditLog->elementHasChanged(ElementType::Category, $category->id, $this->before, $this->after);
     }
 
     /**
@@ -156,11 +175,11 @@ class AuditLog_CategoryService extends BaseApplicationComponent
             ),
             'title' => array(
                 'label' => Craft::t('Title'),
-                'value' => $category->title,
+                'value' => (string) $category->getTitle(),
             ),
             'group' => array(
                 'label' => Craft::t('Group'),
-                'value' => $category->group->name,
+                'value' => (string) $category->getGroup(),
             ),
         );
 
@@ -168,7 +187,13 @@ class AuditLog_CategoryService extends BaseApplicationComponent
         $elementType = craft()->elements->getElementType(ElementType::Category);
 
         // Get nice attributes
-        $attributes = $elementType->defineTableAttributes();
+        $availableAttributes = $elementType->defineAvailableTableAttributes();
+
+        // Make 'em fit
+        $attributes = array();
+        foreach ($availableAttributes as $key => $result) {
+            $attributes[$key] = $result['label'];
+        }
 
         // Get static "fields"
         foreach ($category->getAttributes() as $handle => $value) {

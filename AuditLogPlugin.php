@@ -32,7 +32,7 @@ class AuditLogPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '0.6.2';
+        return '0.7.0';
     }
 
     /**

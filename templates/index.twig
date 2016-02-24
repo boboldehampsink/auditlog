@@ -74,7 +74,7 @@ $('#auditlog-download-csv').click(function(e) {
     var form = $(this).after('<form method="post">{{ getCsrfInput() }}<input type="hidden" name="action" value="auditLog/download"></form>').next('form');
 
     // Add controller data
-    var params = decodeURIComponent($.param(Craft.elementIndex.getControllerData())).split('&');
+    var params = decodeURIComponent($.param(Craft.elementIndex.getViewParams())).split('&');
     $.each(params, function(key, value) {
         $(form).append('<input type="hidden" name="' + value.split('=')[0] + '" value="' + value.split('=')[1] + '">');
     });

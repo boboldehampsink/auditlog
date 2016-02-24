@@ -43,37 +43,50 @@ class AuditLogElementType extends BaseElementType
     public function getStatuses()
     {
         return array(
-            AuditLogModel::CREATED  => Craft::t('Created'),
+            AuditLogModel::CREATED => Craft::t('Created'),
             AuditLogModel::MODIFIED => Craft::t('Modified'),
-            AuditLogModel::DELETED  => Craft::t('Deleted'),
+            AuditLogModel::DELETED => Craft::t('Deleted'),
         );
     }
 
     /**
-     * Define table column names.
-     *
-     * @param string $source
+     * Define available table column names.
      *
      * @return array
      */
-    public function defineTableAttributes($source = null)
+    public function defineAvailableTableAttributes()
     {
         // Define default attributes
         $attributes = array(
-            'type'        => Craft::t('Type'),
-            'user'        => Craft::t('User'),
-            'origin'      => Craft::t('Origin'),
-            'dateUpdated' => Craft::t('Modified'),
+            'type' => array('label' => Craft::t('Type')),
+            'user' => array('label' => Craft::t('User')),
+            'origin' => array('label' => Craft::t('Origin')),
+            'dateUpdated' => array('label' => Craft::t('Modified')),
         );
 
         // Allow plugins to modify the attributes
-        craft()->plugins->call('modifyAuditLogTableAttributes', array(&$attributes, $source));
+        $pluginAttributes = craft()->plugins->call('defineAdditionalAuditLogTableAttributes', array(), true);
+        foreach ($pluginAttributes as $thisPluginAttributes) {
+            $attributes = array_merge($attributes, $thisPluginAttributes);
+        }
 
         // Set changes at last
-        $attributes['changes'] = Craft::t('Changes');
+        $attributes['changes'] = array('label' => Craft::t('Changes'));
 
         // Return the attributes
         return $attributes;
+    }
+
+    /**
+     * Returns the default table attributes.
+     *
+     * @param string $source
+     *
+     * @return string[]
+     */
+    public function getDefaultTableAttributes($source = null)
+    {
+        return array('type', 'user', 'origin', 'dateUpdated', 'changes');
     }
 
     /**
@@ -101,29 +114,24 @@ class AuditLogElementType extends BaseElementType
             case 'dateCreated':
             case 'dateUpdated':
                 return craft()->dateFormatter->formatDateTime($element->$attribute);
-                break;
 
             // Return clickable user link
             case 'user':
                 $user = $element->getUser();
 
                 return $user ? '<a href="'.$user->getCpEditUrl().'">'.$user.'</a>' : Craft::t('Guest');
-                break;
 
             // Return clickable event origin
             case 'origin':
                 return '<a href="'.preg_replace('/'.craft()->config->get('cpTrigger').'\//', '', UrlHelper::getUrl($element->origin), 1).'">'.$element->origin.'</a>';
-                break;
 
             // Return view changes button
             case 'changes':
                 return '<a class="btn" href="'.UrlHelper::getCpUrl('auditlog/'.$element->id).'">'.Craft::t('View').'</a>';
-                break;
 
             // Default behavior
             default:
                 return $element->$attribute;
-                break;
         }
     }
 
@@ -135,26 +143,24 @@ class AuditLogElementType extends BaseElementType
     public function defineCriteriaAttributes()
     {
         return array(
-            'type'        => AttributeType::String,
-            'userId'      => AttributeType::Number,
-            'origin'      => AttributeType::String,
-            'modified'    => AttributeType::DateTime,
-            'before'      => AttributeType::String,
-            'after'       => AttributeType::String,
-            'status'      => AttributeType::String,
-            'from'        => AttributeType::DateTime,
-            'to'          => AttributeType::DateTime,
-            'order'       => array(AttributeType::String, 'default' => 'auditlog.id desc'),
+            'type' => AttributeType::String,
+            'userId' => AttributeType::Number,
+            'origin' => AttributeType::String,
+            'modified' => AttributeType::DateTime,
+            'before' => AttributeType::String,
+            'after' => AttributeType::String,
+            'status' => AttributeType::String,
+            'from' => AttributeType::DateTime,
+            'to' => AttributeType::DateTime,
+            'order' => array(AttributeType::String, 'default' => 'auditlog.id desc'),
         );
     }
 
     /**
-     * Cancel the elements query.
+     * Modify the elements query.
      *
      * @param DbCommand            $query
      * @param ElementCriteriaModel $criteria
-     *
-     * @return bool
      */
     public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
     {
@@ -190,11 +196,6 @@ class AuditLogElementType extends BaseElementType
             $query->andWhere(DbHelper::parseParam('auditlog.origin', $criteria->origin, $query->params));
         }
 
-        // Check for date modified
-        if (!empty($criteria->modified)) {
-            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', $criteria->modified, $query->params));
-        }
-
         // Check before
         if (!empty($criteria->before)) {
             $query->andWhere(DbHelper::parseParam('auditlog.before', $criteria->before, $query->params));
@@ -203,6 +204,31 @@ class AuditLogElementType extends BaseElementType
         // Check after
         if (!empty($criteria->after)) {
             $query->andWhere(DbHelper::parseParam('auditlog.after', $criteria->after, $query->params));
+        }
+
+        // Check for status
+        if (!empty($criteria->status)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.status', $criteria->status, $query->params));
+        }
+
+        // Dates
+        $this->applyDateCriteria($criteria, $query);
+
+        // Search
+        $this->applySearchCriteria($criteria, $query);
+    }
+
+    /**
+     * Apply date criteria.
+     *
+     * @param ElementCriteriaModel $criteria
+     * @param DbCommand            $query
+     */
+    private function applyDateCriteria(ElementCriteriaModel $criteria, DbCommand $query)
+    {
+        // Check for date modified
+        if (!empty($criteria->modified)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', $criteria->modified, $query->params));
         }
 
         // Check for date from
@@ -215,18 +241,16 @@ class AuditLogElementType extends BaseElementType
             $criteria->to->add(new DateInterval('PT23H59M59S'));
             $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->to), $query->params));
         }
+    }
 
-        // Check for type
-        if (!empty($criteria->type)) {
-            $query->andWhere(DbHelper::parseParam('auditlog.type', $criteria->type, $query->params));
-        }
-
-        // Check for status
-        if (!empty($criteria->status)) {
-            $query->andWhere(DbHelper::parseParam('auditlog.status', $criteria->status, $query->params));
-        }
-
-        // Search
+    /**
+     * Apply search criteria.
+     *
+     * @param ElementCriteriaModel $criteria
+     * @param DbCommand            $query
+     */
+    private function applySearchCriteria(ElementCriteriaModel $criteria, DbCommand $query)
+    {
         if (!empty($criteria->search)) {
 
             // Always perform a LIKE search
@@ -273,7 +297,7 @@ class AuditLogElementType extends BaseElementType
         // Set default sources
         $sources = array(
             '*' => array(
-                'label'      => Craft::t('All logs'),
+                'label' => Craft::t('All logs'),
             ),
             array('heading' => Craft::t('Elements')),
         );
@@ -281,9 +305,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for entries when enabled
         if (in_array(ElementType::Entry, $settings->enabled)) {
             $sources['entries'] = array(
-                'label'      => Craft::t('Entries'),
-                'criteria'   => array(
-                    'type'   => ElementType::Entry,
+                'label' => Craft::t('Entries'),
+                'criteria' => array(
+                    'type' => ElementType::Entry,
                 ),
             );
         }
@@ -291,9 +315,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for categories when enabled
         if (in_array(ElementType::Category, $settings->enabled)) {
             $sources['categories'] = array(
-                'label'      => Craft::t('Categories'),
-                'criteria'   => array(
-                    'type'   => ElementType::Category,
+                'label' => Craft::t('Categories'),
+                'criteria' => array(
+                    'type' => ElementType::Category,
                 ),
             );
         }
@@ -301,9 +325,9 @@ class AuditLogElementType extends BaseElementType
         // Show sources for users when enabled
         if (in_array(ElementType::User, $settings->enabled)) {
             $sources['users'] = array(
-                'label'      => Craft::t('Users'),
-                'criteria'   => array(
-                    'type'   => ElementType::User,
+                'label' => Craft::t('Users'),
+                'criteria' => array(
+                    'type' => ElementType::User,
                 ),
             );
         }
@@ -331,10 +355,10 @@ class AuditLogElementType extends BaseElementType
     public function defineSortableAttributes()
     {
         // Set modified first
-        $attributes['dateUpdated'] = Craft::t('Modified');
+        $attributes = array('dateUpdated' => Craft::t('Modified'));
 
         // Get table attributes
-        $attributes = array_merge($attributes, $this->defineTableAttributes());
+        $attributes = array_merge($attributes, parent::defineSortableAttributes());
 
         // Unset unsortable attributes
         unset($attributes['user'], $attributes['changes']);
