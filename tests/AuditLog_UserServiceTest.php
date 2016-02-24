@@ -33,44 +33,12 @@ class AuditLog_UserServiceTest extends BaseTest
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function teardown()
-    {
-        parent::teardown();
-        AuditLogRecord::$db = craft()->db;
-    }
-
-    /**
-     * Test onBeforeSaveUser.
-     *
-     * @param UserModel $user
-     * @param bool      $isNewUser
-     *
-     * @covers ::onBeforeSaveUser
-     * @covers ::fields
-     * @dataProvider provideSaveUserEvents
-     */
-    final public function testOnBeforeSaveUser(UserModel $user, $isNewUser)
-    {
-        $this->setMockAuditLogService();
-
-        $service = new AuditLog_UserService();
-        $event = new Event($service, array(
-            'user' => $user,
-            'isNewUser' => $isNewUser,
-        ));
-        $service->onBeforeSaveUser($event);
-
-        $this->assertArrayHasKey('username', $service->before);
-    }
-
-    /**
      * Test onSaveUser.
      *
      * @param UserModel $user
      * @param bool      $isNewUser
      *
+     * @covers ::onBeforeSaveUser
      * @covers ::onSaveUser
      * @covers ::fields
      * @dataProvider provideSaveUserEvents
@@ -82,15 +50,18 @@ class AuditLog_UserServiceTest extends BaseTest
         $this->setMockAuditLogService();
         $this->setMockUserGroupsService();
         $this->setMockUserSessionService();
+        $this->setMockFieldsService();
+        $this->setMockLocalizationService();
 
         $service = new AuditLog_UserService();
         $event = new Event($service, array(
             'user' => $user,
             'isNewUser' => $isNewUser,
         ));
+        $service->onBeforeSaveUser($event);
         $service->onSaveUser($event);
 
-        $this->assertArrayHasKey('username', $service->after);
+        $this->assertArrayHasKey('id', $service->after);
     }
 
     /**
@@ -109,6 +80,7 @@ class AuditLog_UserServiceTest extends BaseTest
         $this->setMockAuditLogService();
         $this->setMockUserGroupsService();
         $this->setMockUserSessionService();
+        $this->setMockFieldsService();
 
         $service = new AuditLog_UserService();
         $event = new Event($service, array(
@@ -116,7 +88,7 @@ class AuditLog_UserServiceTest extends BaseTest
         ));
         $service->onBeforeDeleteUser($event);
 
-        $this->assertArrayHasKey('username', $service->after);
+        $this->assertArrayHasKey('id', $service->after);
     }
 
     /**
@@ -126,15 +98,13 @@ class AuditLog_UserServiceTest extends BaseTest
      */
     final public function provideSaveUserEvents()
     {
-        $user = $this->getMockUserModel();
-
         return array(
-            'With new user' => array($user, true),
-            'Without new user' => array($user, false),
-            'With posted groups' => call_user_func(function () use ($user) {
+            'With new user' => array($this->getMockUserModel(), true),
+            'Without new user' => array($this->getMockUserModel(), false),
+            'With posted groups' => call_user_func(function () {
                 $this->setMockRequestService();
 
-                return array($user, false);
+                return array($this->getMockUserModel(), false);
             }),
         );
     }
@@ -163,10 +133,13 @@ class AuditLog_UserServiceTest extends BaseTest
     {
         $mock = $this->getMockBuilder('Craft\UserModel')
             ->disableOriginalConstructor()
-            ->setMethods(array('__get'))
+            ->setMethods(array('__get', 'getAttributes'))
             ->getMock();
 
         $mock->expects($this->any())->method('__get')->willReturn('test');
+        $mock->expects($this->any())->method('getAttributes')->willReturn(array(
+            array('id' => 'test'),
+        ));
 
         return $mock;
     }
@@ -206,8 +179,6 @@ class AuditLog_UserServiceTest extends BaseTest
         $mock->expects($this->any())->method('createCommand')->willReturn($command);
         $mock->expects($this->any())->method('getSchema')->willReturn($schema);
 
-        $this->setComponent(craft(), 'db', $mock);
-
         return $mock;
     }
 
@@ -222,11 +193,13 @@ class AuditLog_UserServiceTest extends BaseTest
     {
         $mock = $this->getMockBuilder('Craft\DbCommand')
             ->setConstructorArgs(array($connection))
-            ->setMethods(array('execute', 'prepare'))
+            ->setMethods(array('execute', 'prepare', 'queryRow', 'queryAll'))
             ->getMock();
 
         $mock->expects($this->any())->method('execute')->willReturn(true);
         $mock->expects($this->any())->method('prepare')->willReturn(true);
+        $mock->expects($this->any())->method('queryRow')->willReturn(array('username' => 'test'));
+        $mock->expects($this->any())->method('queryAll')->willReturn(array(array('username' => 'test')));
 
         return $mock;
     }
@@ -259,7 +232,7 @@ class AuditLog_UserServiceTest extends BaseTest
             'dateUpdated' => new \CMysqlColumnSchema(),
             'uid' => new \CMysqlColumnSchema(),
         );
-        $builder = $this->getMockCommandBuilder($connection);
+        $builder = $this->getMockCommandBuilder($connection, $mock);
 
         $mock->expects($this->any())->method('getTable')->willReturn($table);
         $mock->expects($this->any())->method('getCommandBuilder')->willReturn($builder);
@@ -271,19 +244,25 @@ class AuditLog_UserServiceTest extends BaseTest
      * Mock CdbCommandBuilder.
      *
      * @param DbConnection $connection
+     * @param MysqlSchema  $schema
      *
      * @return \CdbCommandBuilder
      */
-    private function getMockCommandBuilder(DbConnection $connection)
+    private function getMockCommandBuilder(DbConnection $connection, MysqlSchema $schema)
     {
         $mock = $this->getMockBuilder('\CdbCommandBuilder')
             ->disableOriginalConstructor()
-            ->setMethods(array('createInsertCommand'))
+            ->setMethods(array('createInsertCommand', 'createPkCommand', 'createPkCriteria', 'createFindCommand', 'applyLimit', 'getSchema', 'getDbConnection', 'bindValues'))
             ->getMock();
 
         $command = $this->getMockDbCommand($connection);
 
         $mock->expects($this->any())->method('createInsertCommand')->willReturn($command);
+        $mock->expects($this->any())->method('createPkCommand')->willReturn($command);
+        $mock->expects($this->any())->method('createPkCriteria')->willReturn($command);
+        $mock->expects($this->any())->method('createFindCommand')->willReturn($command);
+        $mock->expects($this->any())->method('getSchema')->willReturn($schema);
+        $mock->expects($this->any())->method('getDbConnection')->willReturn($connection);
 
         return $mock;
     }
@@ -307,6 +286,23 @@ class AuditLog_UserServiceTest extends BaseTest
     }
 
     /**
+     * Mock UserGroupModel.
+     *
+     * @return UserGroupModel
+     */
+    private function getMockUserGroupModel()
+    {
+        $mock = $this->getMockBuilder('Craft\UserGroupModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('__toString'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('__toString')->willReturn('test');
+
+        return $mock;
+    }
+
+    /**
      * Mock UserSessionService.
      */
     private function setMockUserSessionService()
@@ -324,19 +320,92 @@ class AuditLog_UserServiceTest extends BaseTest
     }
 
     /**
-     * Mock UserGroupModel.
-     *
-     * @return UserGroupModel
+     * Mock FieldsService.
      */
-    private function getMockUserGroupModel()
+    private function setMockFieldsService()
     {
-        $mock = $this->getMockBuilder('Craft\UserGroupModel')
+        $mock = $this->getMockBuilder('Craft\FieldsService')
             ->disableOriginalConstructor()
-            ->setMethods(array('__toString'))
+            ->setMethods(array('getLayoutByType', 'getFieldByHandle', 'getAllFields'))
             ->getMock();
 
-        $mock->expects($this->any())->method('__toString')->willReturn('test');
+        $layout = $this->getMockFieldLayoutModel();
+        $field = $this->getMockFieldModel();
+
+        $mock->expects($this->any())->method('getLayoutByType')->willReturn($layout);
+        $mock->expects($this->any())->method('getFieldByHandle')->willReturn($field);
+        $mock->expects($this->any())->method('getAllFields')->willReturn(array($field));
+
+        $this->setComponent(craft(), 'fields', $mock);
+    }
+
+    /**
+     * Mock FieldLayoutModel.
+     *
+     * @return FieldLayoutModel
+     */
+    private function getMockFieldLayoutModel()
+    {
+        $mock = $this->getMockBuilder('Craft\FieldLayoutModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getFields'))
+            ->getMock();
+
+        $fields = array($this->getMockFieldLayoutFieldModel());
+
+        $mock->expects($this->any())->method('getFields')->willReturn($fields);
 
         return $mock;
+    }
+
+    /**
+     * Mock FieldLayoutFieldModel.
+     *
+     * @return FieldLayoutFieldModel
+     */
+    private function getMockFieldLayoutFieldModel()
+    {
+        $mock = $this->getMockBuilder('Craft\FieldLayoutFieldModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getField'))
+            ->getMock();
+
+        $field = $this->getMockFieldModel();
+
+        $mock->expects($this->any())->method('getField')->willReturn($field);
+
+        return $mock;
+    }
+
+    /**
+     * Mock FieldModel.
+     *
+     * @return FieldModel
+     */
+    private function getMockFieldModel()
+    {
+        $mock = $this->getMockBuilder('Craft\FieldModel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('__get'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('__get')->willReturn('test');
+
+        return $mock;
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('nl');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }
