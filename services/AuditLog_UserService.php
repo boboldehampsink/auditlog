@@ -27,111 +27,130 @@ class AuditLog_UserService extends BaseApplicationComponent
      *
      * @var array
      */
-    public $after  = array();
+    public $after = array();
 
     /**
-     * Initialize the category saving/deleting events.
+     * Initialize the user saving/deleting events.
+     *
+     * @codeCoverageIgnore
      */
     public function log()
     {
-
         // Get values before saving
-        craft()->on('users.onBeforeSaveUser', function (Event $event) {
-
-            // Get user id to save
-            $id = $event->params['user']->id;
-
-            if (!$event->params['isNewUser']) {
-
-                // Get old user from db
-                $user = UserModel::populateModel(UserRecord::model()->findById($id));
-
-                // Get fields
-                craft()->auditLog_user->before = craft()->auditLog_user->fields($user);
-            } else {
-
-                // Get fields
-                craft()->auditLog_user->before = craft()->auditLog_user->fields($event->params['user'], true);
-            }
-
-        });
+        craft()->on('users.onBeforeSaveUser', array($this, 'onBeforeSaveUser'));
 
         // Get values after saving
-        craft()->on('users.onSaveUser', function (Event $event) {
-
-            // Get saved user
-            $user = $event->params['user'];
-
-            // Get fields
-            craft()->auditLog_user->after = craft()->auditLog_user->fields($user);
-
-            // New row
-            $log = new AuditLogRecord();
-
-            // Set user id
-            $log->userId = craft()->userSession->getUser() ? craft()->userSession->getUser()->id : $user->id;
-
-            // Set element type
-            $log->type = ElementType::User;
-
-            // Set origin
-            $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
-
-            // Set before
-            $log->before = craft()->auditLog_user->before;
-
-            // Set after
-            $log->after = craft()->auditLog_user->after;
-
-            // Set status
-            $log->status = ($event->params['isNewUser'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
-
-            // Save row
-            $log->save(false);
-
-            // Callback
-            craft()->auditLog->elementHasChanged(ElementType::User, $user->id, craft()->auditLog_user->before, craft()->auditLog_user->after);
-
-        });
+        craft()->on('users.onSaveUser', array($this, 'onSaveUser'));
 
         // Get values before deleting
-        craft()->on('users.onBeforeDeleteUser', function (Event $event) {
+        craft()->on('users.onBeforeDeleteUser', array($this, 'onBeforeDeleteUser'));
+    }
 
-            // Get deleted user
-            $user = $event->params['user'];
+    /**
+     * Handle the onBeforeSaveUser event.
+     *
+     * @param Event $event
+     */
+    public function onBeforeSaveUser(Event $event)
+    {
+        // Get user id to save
+        $id = $event->params['user']->id;
+
+        if (!$event->params['isNewUser']) {
+
+            // Get old user from db
+            $user = UserModel::populateModel(UserRecord::model()->findById($id));
 
             // Get fields
-            craft()->auditLog_user->before = craft()->auditLog_user->fields($user);
-            craft()->auditLog_user->after  = craft()->auditLog_user->fields($user, true);
+            $this->before = $this->fields($user);
+        } else {
 
-            // New row
-            $log = new AuditLogRecord();
+            // Get fields
+            $this->before = $this->fields($event->params['user'], true);
+        }
+    }
 
-            // Set user id
-            $log->userId = craft()->userSession->getUser()->id;
+    /**
+     * Handle the onSaveUser event.
+     *
+     * @param Event $event
+     */
+    public function onSaveUser(Event $event)
+    {
+        // Get saved user
+        $user = $event->params['user'];
 
-            // Set element type
-            $log->type = ElementType::User;
+        // Get fields
+        $this->after = $this->fields($user);
 
-            // Set origin
-            $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
+        // New row
+        $log = new AuditLogRecord();
 
-            // Set before
-            $log->before = craft()->auditLog_user->before;
+        // Set user id
+        $log->userId = craft()->userSession->getUser() ? craft()->userSession->getUser()->id : $user->id;
 
-            // Set after
-            $log->after = craft()->auditLog_user->after;
+        // Set element type
+        $log->type = ElementType::User;
 
-            // Set status
-            $log->status = AuditLogModel::DELETED;
+        // Set origin
+        $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
 
-            // Save row
-            $log->save(false);
+        // Set before
+        $log->before = $this->before;
 
-            // Callback
-            craft()->auditLog->elementHasChanged(ElementType::User, $user->id, craft()->auditLog_user->before, craft()->auditLog_user->after);
+        // Set after
+        $log->after = $this->after;
 
-        });
+        // Set status
+        $log->status = ($event->params['isNewUser'] ? AuditLogModel::CREATED : AuditLogModel::MODIFIED);
+
+        // Save row
+        $log->save(false);
+
+        // Callback
+        craft()->auditLog->elementHasChanged(ElementType::User, $user->id, $this->before, $this->after);
+    }
+
+    /**
+     * Handle the onBeforeDeleteUser event.
+     *
+     * @param Event $event
+     */
+    public function onBeforeDeleteUser(Event $event)
+    {
+        // Get deleted user
+        $user = $event->params['user'];
+
+        // Get fields
+        $this->before = $this->fields($user);
+        $this->after = $this->fields($user, true);
+
+        // New row
+        $log = new AuditLogRecord();
+
+        // Set user id
+        $log->userId = craft()->userSession->getUser()->id;
+
+        // Set element type
+        $log->type = ElementType::User;
+
+        // Set origin
+        $log->origin = craft()->request->isCpRequest() ? craft()->config->get('cpTrigger').'/'.craft()->request->path : craft()->request->path;
+
+        // Set before
+        $log->before = $this->before;
+
+        // Set after
+        $log->after = $this->after;
+
+        // Set status
+        $log->status = AuditLogModel::DELETED;
+
+        // Save row
+        $log->save(false);
+
+        // Callback
+        craft()->auditLog->elementHasChanged(ElementType::User, $user->id, $this->before, $this->after);
     }
 
     /**
@@ -144,7 +163,6 @@ class AuditLog_UserService extends BaseApplicationComponent
      */
     public function fields(UserModel $user, $empty = false)
     {
-
         // Check if we are saving new groups
         $groupIds = craft()->request->getPost('groups', false);
 
