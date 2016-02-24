@@ -34,6 +34,8 @@ Changelog
 =================
 ###0.7.0###
  - Added Craft 2.5 compatibility
+ - Refactored plugin for better readability, quality and testability
+ - All service code is now fully covered by unit tests
 
 ###0.6.2###
  - Fixed a bug where the date range didn't fully work
