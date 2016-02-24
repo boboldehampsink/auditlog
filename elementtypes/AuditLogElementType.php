@@ -198,11 +198,6 @@ class AuditLogElementType extends BaseElementType
             $query->andWhere(DbHelper::parseParam('auditlog.origin', $criteria->origin, $query->params));
         }
 
-        // Check for date modified
-        if (!empty($criteria->modified)) {
-            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', $criteria->modified, $query->params));
-        }
-
         // Check before
         if (!empty($criteria->before)) {
             $query->andWhere(DbHelper::parseParam('auditlog.before', $criteria->before, $query->params));
@@ -211,6 +206,31 @@ class AuditLogElementType extends BaseElementType
         // Check after
         if (!empty($criteria->after)) {
             $query->andWhere(DbHelper::parseParam('auditlog.after', $criteria->after, $query->params));
+        }
+
+        // Check for status
+        if (!empty($criteria->status)) {
+            $query->andWhere(DbHelper::parseParam('auditlog.status', $criteria->status, $query->params));
+        }
+
+        // Dates
+        $this->applyDateCriteria($criteria, $query);
+
+        // Search
+        $this->applySearchCriteria($criteria, $query);
+    }
+
+    /**
+     * Apply date criteria.
+     *
+     * @param ElementCriteriaModel $search
+     * @param DbCommand            $query
+     */
+    private function applyDateCriteria(ElementCriteriaModel $criteria, DbCommand $query)
+    {
+        // Check for date modified
+        if (!empty($criteria->modified)) {
+            $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', $criteria->modified, $query->params));
         }
 
         // Check for date from
@@ -223,18 +243,16 @@ class AuditLogElementType extends BaseElementType
             $criteria->to->add(new DateInterval('PT23H59M59S'));
             $query->andWhere(DbHelper::parseDateParam('auditlog.dateUpdated', '<= '.DateTimeHelper::formatTimeForDb($criteria->to), $query->params));
         }
+    }
 
-        // Check for type
-        if (!empty($criteria->type)) {
-            $query->andWhere(DbHelper::parseParam('auditlog.type', $criteria->type, $query->params));
-        }
-
-        // Check for status
-        if (!empty($criteria->status)) {
-            $query->andWhere(DbHelper::parseParam('auditlog.status', $criteria->status, $query->params));
-        }
-
-        // Search
+    /**
+     * Apply search criteria.
+     *
+     * @param ElementCriteriaModel $search
+     * @param DbCommand            $query
+     */
+    private function applySearchCriteria(ElementCriteriaModel $criteria, DbCommand $query)
+    {
         if (!empty($criteria->search)) {
 
             // Always perform a LIKE search
