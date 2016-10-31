@@ -56,7 +56,7 @@ class AuditLogService extends BaseApplicationComponent
                 'label' => $item['label'],
                 'changed' => !isset($log['before'][$handle]) || ($item['value'] != $log['before'][$handle]['value']),
                 'after' => $item['value'],
-                'before' => $log['before'][$handle]['value'],
+                'before' => isset($log['before'][$handle]) ? $log['before'][$handle]['value'] : '',
             );
         }
 
