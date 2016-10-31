@@ -162,7 +162,7 @@ class AuditLogService extends BaseApplicationComponent
         // Add labels once again
         $diff = array();
         foreach ($expanded as $key => $value) {
-            $diff[$key]['label'] = $before[$key]['label'];
+            $diff[$key]['label'] = isset($before[$key]) ? $before[$key]['label'] : '';
             $diff[$key]['value'] = $value['value'];
         }
 

@@ -32,6 +32,9 @@ phpunit --bootstrap craft/app/tests/bootstrap.php --configuration craft/plugins/
 
 Changelog
 =================
+###0.7.1###
+ - Fix comparing of non-existing attribute before, closing issue #15
+
 ###0.7.0###
  - Added Craft 2.5 compatibility
  - Refactored plugin for better readability, quality and testability
