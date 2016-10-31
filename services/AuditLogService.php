@@ -54,9 +54,9 @@ class AuditLogService extends BaseApplicationComponent
             // Set parsed values
             $diff[$handle] = array(
                 'label' => $item['label'],
-                'changed' => ($item['value'] != $log['before'][$handle]['value']),
+                'changed' => !isset($log['before'][$handle]) || ($item['value'] != $log['before'][$handle]['value']),
                 'after' => $item['value'],
-                'before' => $log['before'][$handle]['value'],
+                'before' => isset($log['before'][$handle]) ? $log['before'][$handle]['value'] : '',
             );
         }
 
@@ -162,7 +162,7 @@ class AuditLogService extends BaseApplicationComponent
         // Add labels once again
         $diff = array();
         foreach ($expanded as $key => $value) {
-            $diff[$key]['label'] = $before[$key]['label'];
+            $diff[$key]['label'] = isset($before[$key]) ? $before[$key]['label'] : '';
             $diff[$key]['value'] = $value['value'];
         }
 
