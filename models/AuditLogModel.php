@@ -30,6 +30,7 @@ class AuditLogModel extends BaseElementModel
     const FieldTypeAssets      = 'Assets';
     const FieldTypeUsers       = 'Users';
     const FieldTypeLightswitch = 'Lightswitch';
+    const FieldTypeRichText    = 'RichText';
 
     /**
      * Element Type name.

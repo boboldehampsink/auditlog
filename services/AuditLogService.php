@@ -116,7 +116,7 @@ class AuditLogService extends BaseApplicationComponent
 
                         break;
 
-                    case 'RichText':
+                    case AuditLogModel::FieldTypeRichText:
 
                         $data = $data->getRawContent();
 
