@@ -113,7 +113,9 @@ class AuditLogElementType extends BaseElementType
             // Format dates
             case 'dateCreated':
             case 'dateUpdated':
-                return craft()->dateFormatter->formatDateTime($element->$attribute);
+                $dt = new DateTime(craft()->dateFormatter->formatDateTime($element->$attribute));
+                
+                return $dt->format('d M Y H:i:s');
 
             // Return clickable user link
             case 'user':
