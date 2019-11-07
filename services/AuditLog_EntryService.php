@@ -59,7 +59,7 @@ class AuditLog_EntryService extends BaseApplicationComponent
         if (!$event->params['isNewEntry']) {
 
             // Get old entry from db
-            $entry = EntryModel::populateModel(EntryRecord::model()->findById($id));
+            $entry = craft()->entries->getEntryById($id);
 
             // Get fields
             $this->before = $this->fields($entry);

@@ -116,6 +116,12 @@ class AuditLogService extends BaseApplicationComponent
 
                         break;
 
+                    case AuditLogModel::FieldTypeRichText:
+
+                        $data = $data->getRawContent();
+
+                        break;
+
                 }
             }
         } else {
